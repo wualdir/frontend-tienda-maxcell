@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api-maxcell.onrender.com/api'
+  apiUrl: 'https://api-maxcell.onrender.com'
 };
