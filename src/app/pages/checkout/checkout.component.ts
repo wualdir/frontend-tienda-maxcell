@@ -25,18 +25,22 @@ export class CheckoutComponent implements OnInit {
     private authService: AuthService
   ) {}
 
-  ngOnInit() {
-    // 1. Cargamos el carrito una sola vez al inicio
-    this.loadCart();
-  }
+ ngOnInit() {
+  // 🔥 SUSCRIPCIÓN REACTIVA: Cada vez que el carrito cambie en el servicio,
+  // esta pantalla se actualizará SOLA sin recargar.
+  this.carritoService.cart$.subscribe(items => {
+    this.cart = items;
+    console.log('Checkout actualizado reactivamente:', items);
+  });
 
-  loadCart() {
-    this.carritoService.getCart().subscribe(data => {
-      this.cart = data;
-      // Actualizamos el estado global por si acaso
-      this.carritoService.setCart(data);
-    });
-  }
+  // Disparamos la carga inicial
+  this.loadCart();
+}
+
+loadCart() {
+  // getCart() internamente llama a setCart(), lo que activa la suscripción de arriba
+  this.carritoService.getCart().subscribe();
+}
 
   get total() {
     return this.cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);

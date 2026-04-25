@@ -105,27 +105,28 @@ getCart(): Observable<CartItem[]> {
   }
 
   // ======= Limpiar Carrito =======
-  clearCart(): Observable<any> {
-    const isLogged = !!localStorage.getItem('token');
-    if (!isLogged) {
-      localStorage.removeItem('cart');
-      this.setCart([]);
-      return of({ mensaje: 'carrito limpiado' });
-    }
-    return new Observable(observer => {
-      this.http.delete<CartItem[]>(this.url).subscribe(items => {
-        this.setCart(items);
-        observer.next(items);
-        observer.complete();
-      });
-    });
+ // 2. Asegúrate de que clearCart también limpie el estado reactivo
+clearCart(): Observable<any> {
+  const isLogged = !!localStorage.getItem('token');
+  if (!isLogged) {
+    localStorage.removeItem('cart');
+    this.setCart([]);
+    return of({ mensaje: 'carrito limpiado' });
   }
+  return this.http.delete<CartItem[]>(this.url).pipe(
+    tap(() => this.setCart([])) // 🔥 Limpia el canal visual al instante
+  );
+}
 
   // ======= Sincronizar Carrito =======
- syncCart(localCart: CartItem[]): Observable<CartItem[]> { // 👈 Cambia any por CartItem[]
-  return this.http.post<CartItem[]>(`${this.url}/sync`, {
-    items: localCart
-  });
+// 1. Asegúrate de que syncCart emita los nuevos datos
+syncCart(localCart: CartItem[]): Observable<CartItem[]> {
+  return this.http.post<CartItem[]>(`${this.url}/sync`, { items: localCart }).pipe(
+    tap(itemsActualizados => {
+      // 🔥 ESTO ES CLAVE: Notifica a toda la app el nuevo estado
+      this.setCart(itemsActualizados); 
+    })
+  );
 }
 
   getLocalCartSync(): CartItem[] {

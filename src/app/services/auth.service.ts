@@ -64,17 +64,25 @@ export class AuthService {
   }
 
   // auth.service.ts
+// auth.service.ts (Actualiza este método)
+
 handlePostAuth(): void {
   const localCart = this.carritoService.getLocalCartSync();
   
   if (localCart.length > 0) {
+    // Sincronizamos y el 'tap' del servicio se encargará de llamar a setCart
     this.carritoService.syncCart(localCart).subscribe({
-      next: (items) => {
+      next: () => {
         localStorage.removeItem('cart');
-        this.carritoService.setCart(items); // 👈 Forzamos la actualización inmediata
+        console.log('Sincronización exitosa post-auth');
+      },
+      error: () => {
+        // Si falla la sincronización, al menos intentamos recuperar lo que haya en BD
+        this.carritoService.getCart().subscribe();
       }
     });
   } else {
+    // Si no había nada local, traemos lo de la nube
     this.carritoService.getCart().subscribe();
   }
 }
