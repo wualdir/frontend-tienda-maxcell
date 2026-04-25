@@ -1,22 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CarritoService } from '../../services/carrito.service';
 import { CartItem } from '../../models/carrito.model';
 import { CommonModule } from '@angular/common';
 import { Router } from "@angular/router";
 import { OrdenesService } from '../../services/ordenes.service';
 import { AuthService } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-checkout',
+  standalone: true, // Asegúrate de si es standalone o no según tu proyecto
   imports: [CommonModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
-export class CheckoutComponent implements OnInit {
+export class CheckoutComponent implements OnInit, OnDestroy {
 
   cart: CartItem[] = [];
   confirmado = false;
-  loading = false; // 👈 Añadimos un estado de carga
+  loading = true; 
+  private cartSub: Subscription | undefined;
 
   constructor(
     private carritoService: CarritoService,
@@ -25,22 +28,28 @@ export class CheckoutComponent implements OnInit {
     private authService: AuthService
   ) {}
 
- ngOnInit() {
-  // 🔥 SUSCRIPCIÓN REACTIVA: Cada vez que el carrito cambie en el servicio,
-  // esta pantalla se actualizará SOLA sin recargar.
-  this.carritoService.cart$.subscribe(items => {
-    this.cart = items;
-    console.log('Checkout actualizado reactivamente:', items);
-  });
+  ngOnInit() {
+    // 1. ESCUCHA REACTIVA: La vista siempre reflejará lo que diga el servicio
+    this.cartSub = this.carritoService.cart$.subscribe(items => {
+      this.cart = items;
+      console.log('Checkout actualizado:', items);
+      
+      // Si recibimos items (aunque sea lista vacía), dejamos de cargar
+      // Esto quita el "Sincronizando..." del HTML
+      this.loading = false; 
+    });
 
-  // Disparamos la carga inicial
-  this.loadCart();
-}
+    // 2. DISPARO INICIAL
+    this.loadCart();
+  }
 
-loadCart() {
-  // getCart() internamente llama a setCart(), lo que activa la suscripción de arriba
-  this.carritoService.getCart().subscribe();
-}
+  loadCart() {
+    this.loading = true;
+    // getCart llamará internamente a setCart(), lo que activará el subscribe de arriba
+    this.carritoService.getCart().subscribe({
+      error: () => this.loading = false // En caso de error de red, liberamos la pantalla
+    });
+  }
 
   get total() {
     return this.cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
@@ -54,52 +63,63 @@ loadCart() {
       return;
     }
 
-    if (this.loading) return; // Evita doble clic
+    if (this.loading) return; 
     this.loading = true;
 
-    // 2. Obtenemos la versión más fresca del carrito antes de pagar
+    // Verificación final antes de crear la orden
     this.carritoService.getCart().subscribe({
       next: (items) => {
         if (!items || items.length === 0) {
-          alert('Tu carrito parece estar vacío. Intenta agregar los productos de nuevo.');
+          alert('Tu carrito está vacío.');
           this.loading = false;
           return;
         }
 
-        // 3. Ya no llamamos a syncCart aquí a menos que sea error. 
-        // Directamente creamos la orden porque el backend ya debería estar sincronizado 
-        // gracias al handlePostAuth del login.
         this.ordenesService.createOrder().subscribe({
           next: (orden) => {
             this.confirmado = true;
             localStorage.setItem('lastOrder', JSON.stringify(orden));
 
-            // 4. Limpiamos y redirigimos
-            this.carritoService.clearCart().subscribe(() => {
-              this.loading = false;
-              this.router.navigate(['/orden', orden.id]);
+            this.carritoService.clearCart().subscribe({
+              next: () => {
+                this.loading = false;
+                this.router.navigate(['/orden', orden.id]);
+              },
+              error: () => {
+                this.loading = false;
+                this.router.navigate(['/orden', orden.id]); // Navegamos igual si la orden se creó
+              }
             });
           },
           error: (err) => {
             this.loading = false;
-            console.error('ERROR ORDER:', err);
-
-            if (err.status === 400) {
-              alert(err.error.msg || 'Stock insuficiente o error en validación');
-              this.loadCart();
-            } else if (err.status === 401) {
-              alert('Sesión expirada');
-              this.router.navigate(['/login']);
-            } else {
-              alert('No se pudo procesar el pedido. Inténtalo de nuevo.');
-            }
+            this.manejarError(err);
           }
         });
       },
       error: () => {
         this.loading = false;
-        alert('Error al verificar el carrito');
+        alert('Error de conexión con el servidor');
       }
     });
+  }
+
+  private manejarError(err: any) {
+    if (err.status === 400) {
+      alert(err.error.msg || 'Stock insuficiente');
+      this.loadCart();
+    } else if (err.status === 401) {
+      alert('Sesión expirada');
+      this.router.navigate(['/login']);
+    } else {
+      alert('Error al procesar el pedido');
+    }
+  }
+
+  ngOnDestroy() {
+    // Limpiamos la suscripción para evitar fugas de memoria
+    if (this.cartSub) {
+      this.cartSub.unsubscribe();
+    }
   }
 }
