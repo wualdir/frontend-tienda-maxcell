@@ -63,20 +63,24 @@ export class CarritoService {
   }
 
   // ======= Obtener Productos =======
-  getCart(): Observable<CartItem[]> {
-    const isLogged = !!localStorage.getItem('token');
-    
-    if (!isLogged) {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      this.setCart(cart);
-      return of(cart);
-    }
-
-    // 🔐 Logueados: GET a Render/Localhost según el ambiente
-    return this.http.get<CartItem[]>(this.url).pipe(
-      tap(items => this.setCart(items)) 
-    );
+ // carrito.service.ts
+getCart(): Observable<CartItem[]> {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    this.setCart(cart);
+    return of(cart);
   }
+
+  // Si está logueado, forzamos la petición al servidor y actualizamos el chorro de datos ($)
+  return this.http.get<CartItem[]>(this.url).pipe(
+    tap(items => {
+      console.log('CARRITO RECUPERADO DEL SERVIDOR:', items);
+      this.setCart(items); // 👈 Esto es lo que le avisa a todos los componentes
+    })
+  );
+}
 
   // ======= Remover Items =======
   removeFromCart(id: string): Observable<any> {

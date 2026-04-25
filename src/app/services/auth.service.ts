@@ -63,23 +63,18 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  handlePostAuth(): void {
+  // auth.service.ts
+handlePostAuth(): void {
   const localCart = this.carritoService.getLocalCartSync();
   
   if (localCart.length > 0) {
     this.carritoService.syncCart(localCart).subscribe({
-      next: (itemsActualizados) => { // 👈 Recibimos los items del backend tras unir
+      next: (items) => {
         localStorage.removeItem('cart');
-        // IMPORTANTE: Actualizamos el estado global de inmediato
-        this.carritoService.setCart(itemsActualizados);
-      },
-      error: (err) => {
-        // Si falla la sincronización, al menos cargamos lo que haya en DB
-        this.carritoService.getCart().subscribe();
+        this.carritoService.setCart(items); // 👈 Forzamos la actualización inmediata
       }
     });
   } else {
-    // Si no había nada local, traemos lo de la DB y notificamos
     this.carritoService.getCart().subscribe();
   }
 }
