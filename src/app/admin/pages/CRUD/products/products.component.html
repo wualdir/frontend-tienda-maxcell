@@ -1,0 +1,58 @@
+<section class="admin-prod-container">
+  <header class="admin-prod-header">
+    <div class="header-info">
+      <h2 class="admin-prod-title">📱 Gestión de Inventario</h2>
+      <p class="admin-prod-subtitle">Administra el catálogo de dispositivos y su disponibilidad.</p>
+    </div>
+    <button class="btn-new-prod" [routerLink]="['/admin/crear']">
+      ➕ Nuevo Producto
+    </button>
+  </header>
+
+  <div class="admin-prod-card">
+    <div class="table-responsive">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Producto</th>
+            <th>Marca</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of productos">
+            <td class="col-img">
+              <img [src]="p.imagen || 'https://via.placeholder.com/50'" [alt]="p.modelo">
+            </td>
+            <td class="col-model">
+              <span class="model-name">{{ p.modelo }}</span>
+              <small class="prod-id">#{{ p.id.slice(-6) }}</small>
+            </td>
+            <td>{{ p.marca }}</td>
+            <td class="col-price">S/ {{ p.precio | number:'1.2-2' }}</td>
+            <td class="col-stock">
+              <span class="stock-badge" [class.low]="p.stock < 5">
+                {{ p.stock }} un.
+              </span>
+            </td>
+            <td class="col-actions">
+              <button class="btn-edit" [routerLink]="['/admin/editar', p.id]" title="Editar">
+                ✏️
+              </button>
+              <button class="btn-delete" (click)="eliminar(p.id!)" title="Eliminar">
+                ❌
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="productos.length === 0" class="empty-state">
+      <p>No hay productos en el catálogo.</p>
+    </div>
+  </div>
+</section>

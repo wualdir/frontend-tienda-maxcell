@@ -1,1 +1,56 @@
-/* You can add global styles to this file, and also import other style files */
+/* RESET DE CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+    /* Paleta Imagen 6 - Dark Tech */
+    --bg-dark: #0f172a;       /* Fondo profundo */
+    --bg-card: #1e293b;       /* Fondo de tarjetas */
+    --accent-blue: #0ea5e9;   /* Azul eléctrico (tu logo) */
+    --accent-glow: rgba(14, 165, 233, 0.15);
+    
+    --text-main: #f8fafc;     /* Blanco suave */
+    --text-muted: #94a3b8;    /* Gris para descripciones */
+    
+    --success: #22c55e;       /* Verde stock */
+    --error: #ef4444;         /* Rojo sin stock */
+    --warning: #f59e0b;       /* Precio original/ofertas */
+
+    /* Sistema de Espaciado (Múltiplos de 8) */
+    --sp-xs: 4px;
+    --sp-sm: 8px;
+    --sp-md: 16px;
+    --sp-lg: 24px;
+    --sp-xl: 32px;
+}
+
+body {
+    font-family: 'Sora', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+/* Scrollbar personalizada para que no rompa el diseño dark */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--bg-card);
+    border-radius: 10px;
+}
+
+/* Evita que el TabBar tape el contenido de la tienda/home */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 70px; 
+  }
+}

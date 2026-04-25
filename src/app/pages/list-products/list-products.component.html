@@ -1,0 +1,44 @@
+<article class="lista-productos">
+  <section 
+    class="card" 
+    *ngFor="let prod of productos" 
+    [class.agotado]="prod.stock === 0"
+    [routerLink]="prod.stock > 0 ? ['/products', prod.id] : null">
+
+    <div *ngIf="prod.stock === 0" class="badge-status">
+      Sin Stock
+    </div>
+
+    <button 
+      class="btn-quick-add" 
+      *ngIf="prod.stock > 0"
+      (click)="agregarAlCarrito(prod, $event)"
+      title="Agregar al carrito">
+      <span class="icon">🛒</span>
+    </button>
+
+    <img
+      class="card-img"
+      [src]="prod.imagen || 'https://via.placeholder.com/200x250'"
+      [alt]="prod.modelo"
+    >
+
+    <h3>{{ prod.modelo }}</h3>
+    <p>{{ prod.marca }}</p>
+
+    <div class="precios-container">
+      <span class="precio-original" *ngIf="prod.precioOriginal && (prod.precioOriginal > prod.precio)">
+        {{ prod.precioOriginal | currency:'S/. ' }}
+      </span>
+      
+      <h4 class="precio">
+        {{ prod.precio | currency:'S/. ' }}
+      </h4>
+    </div>
+
+    <div class="btn-detalle" [class.disabled]="prod.stock === 0">
+      {{ prod.stock > 0 ? 'Ver detalle' : 'No disponible' }}
+    </div>
+
+  </section>
+</article>

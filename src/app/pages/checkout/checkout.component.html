@@ -1,0 +1,55 @@
+<section class="check-container">
+  <h2 class="check-title">🧾 Resumen de Compra</h2>
+
+  <div *ngIf="cart.length > 0; else emptyCart" class="check-grid">
+    
+    <div class="check-list">
+      <article *ngFor="let item of cart" class="check-item">
+        <div class="check-item-img">
+          <img [src]="item.imagen || 'https://via.placeholder.com/100'" [alt]="item.modelo">
+        </div>
+
+        <div class="check-item-info">
+          <h3 class="check-item-name">{{ item.modelo }}</h3>
+          <p class="check-item-price">Precio: {{ item.precio | currency:'S/. ' }}</p>
+          <p class="check-item-qty">Cantidad: {{ item.cantidad }}</p>
+        </div>
+
+        <div class="check-item-subtotal">
+          <span class="label">Subtotal</span>
+          <span class="amount">{{ item.precio * item.cantidad | currency:'S/. ' }}</span>
+        </div>
+      </article>
+    </div>
+
+    <aside class="check-summary">
+      <div class="summary-card">
+        <h3 class="summary-title">Total del Pedido</h3>
+        <div class="summary-row">
+          <span>Productos ({{ cart.length }})</span>
+          <span>{{ total | currency:'S/. ' }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Envío</span>
+          <span class="free">Gratis</span>
+        </div>
+        <div class="summary-total">
+          <span>Total a pagar:</span>
+          <span class="total-amount">{{ total | currency:'S/. ' }}</span>
+        </div>
+
+        <button class="check-btn-confirm" (click)="confirmarCompra()">
+          💳 Confirmar y Pagar
+        </button>
+      </div>
+    </aside>
+
+  </div>
+
+  <ng-template #emptyCart>
+    <div class="check-empty">
+      <p class="empty-text">Tu carrito está vacío 🛒</p>
+      <a class="check-link-back" routerLink="/">Volver a la tienda</a>
+    </div>
+  </ng-template>
+</section>

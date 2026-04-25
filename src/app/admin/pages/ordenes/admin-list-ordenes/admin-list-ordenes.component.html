@@ -1,0 +1,41 @@
+<div class="admin-orders-container">
+  <header class="admin-orders-header">
+    <h2 class="admin-orders-title">Gestión de Pedidos</h2>
+    <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
+  </header>
+
+  <div class="admin-orders-grid">
+    <article class="admin-order-card" *ngFor="let o of ordenes">
+      
+      <div class="admin-order-header">
+        <span class="admin-order-id">#{{ o.id.slice(-6) }}</span> <span class="admin-order-status" [ngClass]="'status-' + o.estado">
+          {{ o.estado }}
+        </span>
+      </div>
+
+      <div class="admin-order-body">
+        <div class="admin-order-info">
+          <span class="info-label">Cliente:</span>
+          <span class="info-value">👤 {{ o.user.username }}</span>
+        </div>
+        
+        <div class="admin-order-info">
+          <span class="info-label">Artículos:</span>
+          <span class="info-value">📦 {{ o.items.length }} producto(s)</span>
+        </div>
+
+        <div class="admin-order-total">
+          <span class="total-label">Monto Total:</span>
+          <span class="total-amount">S/ {{ o.total | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="admin-order-actions">
+        <a class="admin-order-btn-view" [routerLink]="['/admin/ordenes', o.id]">
+          Gestionar Pedido
+        </a>
+      </div>
+
+    </article>
+  </div>
+</div>

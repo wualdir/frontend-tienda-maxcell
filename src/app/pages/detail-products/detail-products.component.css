@@ -1,0 +1,234 @@
+/* 1. CONTENEDOR PRINCIPAL */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--sp-md);
+}
+
+.btn-back {
+    display: inline-block;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: var(--sp-lg);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.btn-back:hover {
+    color: var(--accent-blue);
+}
+
+/* 2. LAYOUT MOBILE FIRST */
+.product-card {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna en móvil */
+    gap: var(--sp-xl);
+    background-color: var(--bg-card);
+    border-radius: var(--sp-xl);
+    padding: var(--sp-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 3. SECCIÓN IMAGEN */
+.product-image {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-dark);
+    border-radius: var(--sp-lg);
+    padding: var(--sp-md);
+}
+
+.product-image img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+/* 4. INFORMACIÓN DEL PRODUCTO */
+.brand-tag {
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+}
+
+.model-title {
+    font-size: 1.8rem;
+    margin: var(--sp-xs) 0 var(--sp-md);
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+/* --- Sección de Precios Unificada --- */
+.price-section {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-md);
+    margin-bottom: var(--sp-lg);
+}
+
+.current-price {
+    font-size: 2rem;
+    color: var(--accent-blue);
+    font-weight: 800;
+}
+
+/* Contenedor que agrupa el precio viejo y el badge */
+.oferta-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-sm);
+}
+
+/* SOLO el número tachado */
+.precio-viejo {
+    color: var(--text-muted);
+    text-decoration: line-through; /* La línea solo nace y muere aquí */
+    font-size: 1.1rem;
+    opacity: 0.6;
+}
+
+/* Badge limpio */
+.badge-oferta {
+    background-color: var(--success);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    line-height: 1;
+    
+    /* Estética Glow */
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Aseguramos que no herede nada */
+    text-decoration: none; 
+    display: inline-block;
+}
+/* Stock y Barra */
+.stock-status {
+    margin-bottom: var(--sp-lg);
+}
+
+.in-stock { color: var(--success); font-weight: 600; font-size: 0.9rem; }
+.out-of-stock { color: var(--error); font-weight: 600; font-size: 0.9rem; }
+
+.stock-bar {
+    height: 6px;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    margin-top: var(--sp-sm);
+    overflow: hidden;
+}
+
+.stock-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--success));
+    transition: width 0.5s ease;
+}
+
+/* Botón de Acción */
+.btn-add {
+    width: 100%;
+    padding: var(--sp-md);
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: var(--sp-md);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+.btn-add:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.btn-add:disabled {
+    background-color: #334155;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Badges de Confianza */
+.trust-badges {
+    display: flex;
+    gap: var(--sp-md);
+    margin-top: var(--sp-md);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin: var(--sp-xl) 0;
+}
+
+/* 5. GRID DE ESPECIFICACIONES */
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-md);
+    margin-bottom: var(--sp-xl);
+}
+
+.spec-item {
+    background: var(--bg-dark);
+    padding: var(--sp-md);
+    border-radius: var(--sp-md);
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.spec-icon { font-size: 1.5rem; display: block; margin-bottom: var(--sp-xs); }
+.spec-item p { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
+.spec-item span { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+
+/* Descripción */
+.description h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--sp-sm);
+    color: var(--text-main);
+}
+
+.description p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* 6. MEDIA QUERIES (DESKTOP) */
+@media (min-width: 768px) {
+    .product-card {
+        grid-template-columns: 1fr 1.2fr; /* Dos columnas */
+        align-items: start;
+        padding: var(--sp-xl);
+    }
+
+    .product-image {
+        position: sticky;
+        top: var(--sp-xl);
+    }
+
+    .model-title {
+        font-size: 2.5rem;
+    }
+
+    .specs-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 specs en fila en desktop */
+    }
+}

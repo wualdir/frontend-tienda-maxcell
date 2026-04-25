@@ -1,0 +1,78 @@
+<nav class="main-navbar">
+
+  <nav class="main-navbar1"> 
+    <a routerLink="/home" class="main-navbar1__logo-link">
+      <img class="main-navbar1__logo" src="/Mi-Logo3.svg" alt="Max Cell Logo">
+    </a>
+    <p class="main-navbar1__usuarioActivo" *ngIf="nombreAct">usuario, {{ nombreAct }}</p>
+   
+    <ul class="main-navbar1__list">
+      <li class="main-navbar1__item">
+        <a routerLink="/login" class="main-navbar1__link">
+          <span class="main-navbar1__login">Identifícate</span>
+          <span class="material-symbols-outlined">person</span>
+        </a>
+      </li>
+
+      @if (estaLogueado) {
+        <li class="main-navbar1__item">
+           <a routerLink="/ordenes" class="main-navbar1__pedidos">Mis pedidos</a>
+        </li>
+      }
+
+      <li class="main-navbar1__item">
+        <a  class="main-navbar1__cart">
+          <span class="material-symbols-outlined">shopping_cart</span>
+          @if (cartCount > 0) {
+            <span class="main-navbar1__carrito" (click)="verCarrito()">{{ cartCount }}</span>
+          }
+        </a>
+      </li>
+
+      @if (estaLogueado) {
+        <li class="main-navbar1__item">
+          <button (click)="cerraSesion()" class="main-navbar1__logout">
+            <span class="material-symbols-outlined">logout</span>
+            Cerrar sesión
+          </button>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <nav class="main-navbar2">
+    <div class="main-navbar2__search-container">
+      <input 
+        class="main-navbar2__input"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="buscar()"
+        (keyup.enter)="buscarConBoton()"
+        placeholder="Buscar celulares..."
+      />
+      <button class="main-navbar2__buttonBuscar" (click)="buscarConBoton()">🔍</button>
+    </div>
+   
+    <div class="main-navbar2__busqueda" *ngIf="resultados.length > 0">
+      <div class="main-navbar2__busqueda-item" *ngFor="let p of resultados" (click)="irProducto(p.id)">
+        {{ p.marca }} -- {{ p.modelo }}
+      </div>
+    </div>
+  </nav> 
+  
+
+  <nav class="main-navbar3">
+    <div class="main-navbar3__links-left">
+      <a class="main-navbar3__link" routerLink="/home">Home</a>
+      <a class="main-navbar3__link" routerLink="/tienda">Tienda</a>
+      <a class="main-navbar3__link" routerLink="/categorias">Categorias</a>
+    </div>
+
+    <div class="main-navbar3__links-right">
+       <li class="main-navbar3__admin-item" *ngIf="isAdmin">
+         <a class="main-navbar3__link main-navbar3__link--admin" routerLink="/admin">panel</a>
+       </li>
+    </div>
+  </nav>
+
+</nav>

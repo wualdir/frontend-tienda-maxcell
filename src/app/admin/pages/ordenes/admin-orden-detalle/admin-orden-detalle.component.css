@@ -1,0 +1,130 @@
+.admin-det-container {
+    padding: var(--sp-md);
+}
+
+/* Header */
+.admin-det-header {
+    margin-bottom: var(--sp-xl);
+}
+
+.btn-back {
+    background: transparent;
+    border: none;
+    color: var(--accent-blue);
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: var(--sp-sm);
+}
+
+.admin-det-title {
+    color: var(--text-main);
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.admin-det-id {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-family: monospace;
+}
+
+/* Layout Grid */
+.admin-det-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: var(--sp-lg);
+}
+
+.det-card {
+    background-color: var(--bg-dark);
+    border-radius: var(--sp-md);
+    padding: var(--sp-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.det-card-title {
+    color: var(--text-main);
+    font-size: 1.1rem;
+    margin-bottom: var(--sp-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: var(--sp-sm);
+}
+
+/* Filas de Información */
+.det-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--sp-md);
+    font-size: 0.95rem;
+}
+
+.det-label { color: var(--text-muted); }
+.det-value { color: var(--text-main); font-weight: 600; }
+
+.status-pill {
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.total-row {
+    margin-top: var(--sp-lg);
+    padding-top: var(--sp-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.highlight {
+    color: var(--accent-blue);
+    font-size: 1.4rem;
+}
+
+/* Tabla de Productos */
+.det-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.det-table th {
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: var(--sp-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.det-table td {
+    padding: var(--sp-md) var(--sp-sm);
+    color: var(--text-main);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.col-name { font-weight: 600; color: var(--accent-blue); }
+.col-sub { font-weight: 700; text-align: right; }
+.col-qty { text-align: center; }
+
+/* Botones de Acción */
+.det-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    margin-top: var(--sp-xl);
+}
+
+.btn-action {
+    padding: var(--sp-sm);
+    border: none;
+    border-radius: var(--sp-sm);
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-action.primary { background-color: var(--accent-blue); color: white; }
+.btn-action.danger { background-color: transparent; border: 1px solid var(--error); color: var(--error); }
+.btn-action:hover { opacity: 0.8; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .admin-det-grid { grid-template-columns: 1fr; }
+}

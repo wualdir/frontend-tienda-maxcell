@@ -1,0 +1,36 @@
+<section class="users-container">
+  <header class="users-header">
+    <div class="header-text">
+      <h2 class="users-title">👤 Directorio de Clientes</h2>
+      <p class="users-subtitle">Gestiona los accesos y revisa el historial de compras de los usuarios.</p>
+    </div>
+    <div class="users-stats">
+      <span class="stat-pill">Total: {{ clientes.length }}</span>
+    </div>
+  </header>
+
+  <div class="users-grid">
+    <article class="user-card" *ngFor="let c of clientes">
+      <div class="user-avatar">
+        {{ c.username.charAt(0).toUpperCase() }}
+      </div>
+      
+      <div class="user-info">
+        <h3 class="user-name">{{ c.username }}</h3>
+        <span class="user-role-badge" [ngClass]="'role-' + c.role">
+          {{ c.role }}
+        </span>
+      </div>
+
+      <div class="user-actions">
+        <a class="btn-orders" [routerLink]="['/admin/usuarios', c.id, 'ordenes']">
+          📦 Ver pedidos
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <div *ngIf="clientes.length === 0" class="empty-users">
+    <p>No se encontraron usuarios registrados.</p>
+  </div>
+</section>

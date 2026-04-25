@@ -1,0 +1,142 @@
+.lista-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: var(--sp-md);
+    padding: var(--sp-md);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: var(--bg-card);
+    border-radius: var(--sp-md);
+    padding: var(--sp-md);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-blue);
+    box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+/* Botón flotante de Carrito */
+.btn-quick-add {
+    position: absolute;
+    top: var(--sp-md);
+    right: var(--sp-md);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-quick-add:hover {
+    transform: scale(1.15);
+    background-color: var(--success);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1.1;
+    object-fit: cover;
+    border-radius: var(--sp-sm);
+    margin-bottom: var(--sp-sm);
+    background-color: var(--bg-dark);
+}
+
+h3 {
+    font-size: 1rem;
+    color: var(--text-main);
+    margin: 0 0 var(--sp-xs) 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 30px;
+}
+
+p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--sp-md);
+}
+
+.precios-container {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.precio-original {
+    font-size: 0.75rem;
+    color: var(--warning);
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.precio {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin: 0;
+}
+
+.btn-detalle {
+    display: block;
+    text-align: center;
+    background-color: var(--accent-blue);
+    color: var(--text-main);
+    padding: var(--sp-sm) var(--sp-md);
+    border-radius: var(--sp-sm);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-top: var(--sp-md);
+}
+
+.card.agotado {
+    filter: grayscale(1);
+    opacity: 0.6;
+}
+
+.badge-status {
+    position: absolute;
+    top: var(--sp-sm);
+    left: var(--sp-sm);
+    background-color: var(--error);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    z-index: 5;
+}
+
+.btn-detalle.disabled {
+    background-color: var(--bg-dark);
+    color: var(--text-muted);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (min-width: 1024px) {
+    .lista-productos {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: var(--sp-lg);
+    }
+}

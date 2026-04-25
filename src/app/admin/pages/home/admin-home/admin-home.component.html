@@ -1,0 +1,36 @@
+<section class="admin-container">
+  <header class="admin-header">
+    <h1 class="admin-title">👑 Sistema de Gestión</h1>
+    <p class="admin-subtitle">Bienvenido al panel de control central.</p>
+  </header>
+
+  <nav class="admin-grid">
+    <a [routerLink]="['/admin/ordenes']" routerLinkActive="active" class="admin-card">
+      <div class="admin-card-icon">📦</div>
+      <div class="admin-card-info">
+        <span class="admin-card-title">Órdenes</span>
+        <span class="admin-card-desc">Gestionar pedidos y estados</span>
+      </div>
+    </a>
+
+    <a [routerLink]="['/admin/productos']" routerLinkActive="active" class="admin-card">
+      <div class="admin-card-icon">📱</div>
+      <div class="admin-card-info">
+        <span class="admin-card-title">Productos</span>
+        <span class="admin-card-desc">Inventario y precios</span>
+      </div>
+    </a>
+
+    <a [routerLink]="['/admin/clientes']" routerLinkActive="active" class="admin-card">
+      <div class="admin-card-icon">👤</div>
+      <div class="admin-card-info">
+        <span class="admin-card-title">Clientes</span>
+        <span class="admin-card-desc">Base de datos de usuarios</span>
+      </div>
+    </a>
+  </nav>
+
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+</section>

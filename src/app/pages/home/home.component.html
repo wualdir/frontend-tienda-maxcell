@@ -1,0 +1,7 @@
+<h2>🔥 Productos destacados</h2>
+
+<ng-container *ngIf="(productos$ | async) as productos">
+  <app-list-products
+    [productos]="productos.slice(0, 3)">
+  </app-list-products>
+</ng-container>

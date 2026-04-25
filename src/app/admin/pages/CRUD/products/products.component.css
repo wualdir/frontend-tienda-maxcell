@@ -1,0 +1,100 @@
+.admin-prod-container {
+  padding: var(--sp-lg);
+}
+
+.admin-prod-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-xl);
+}
+
+.admin-prod-title { color: var(--text-main); font-size: 1.8rem; margin: 0; }
+.admin-prod-subtitle { color: var(--text-muted); font-size: 0.9rem; }
+
+.btn-new-prod {
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-new-prod:hover { transform: translateY(-2px); box-shadow: 0 4px 15px var(--accent-glow); }
+
+/* Tabla Estilo Dark */
+.admin-prod-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-table td {
+  padding: 12px 15px;
+  color: var(--text-main);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  vertical-align: middle;
+}
+
+/* Columnas Específicas */
+.col-img img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--bg-dark);
+}
+
+.model-name { display: block; font-weight: 600; color: var(--accent-blue); }
+.prod-id { color: var(--text-muted); font-size: 0.75rem; }
+
+.col-price { font-weight: 700; }
+
+.stock-badge {
+  padding: 4px 8px;
+  background: rgba(0, 230, 118, 0.1);
+  color: var(--success);
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.stock-badge.low {
+  background: rgba(255, 71, 87, 0.1);
+  color: var(--error);
+}
+
+/* Botones de Acción */
+.col-actions { display: flex; gap: 10px; }
+
+.btn-edit, .btn-delete {
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-edit:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+.btn-delete:hover { background: var(--error); border-color: var(--error); }
+
+.empty-state { padding: 40px; text-align: center; color: var(--text-muted); }

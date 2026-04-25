@@ -1,0 +1,110 @@
+/* Bloque Principal */
+.auth-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: var(--sp-xl);
+    background-color: var(--bg-card);
+    border-radius: var(--sp-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.auth-title {
+    font-size: 1.8rem;
+    color: var(--text-main);
+    margin-bottom: var(--sp-md);
+    letter-spacing: -1px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+}
+
+.auth-field {
+    width: 100%;
+}
+
+/* Elemento Input */
+.auth-input {
+    width: 100%;
+    padding: var(--sp-md);
+    background-color: var(--bg-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--sp-sm);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.auth-input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px var(--accent-glow);
+    background-color: rgba(0, 163, 255, 0.05);
+}
+
+/* Botón con Modificadores de Estado */
+.auth-btn-submit {
+    margin-top: var(--sp-sm);
+    padding: var(--sp-md);
+    background: linear-gradient(135deg, var(--accent-blue), #0066ff);
+    color: white;
+    border: none;
+    border-radius: var(--sp-sm);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px var(--accent-glow);
+    transition: transform 0.2s, filter 0.2s;
+}
+
+.auth-btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.auth-btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--text-muted) !important; /* Asegura que cambie el color */
+    box-shadow: none;
+}
+
+/* Errores */
+.auth-error-msg {
+    margin-top: var(--sp-md);
+    padding: var(--sp-sm);
+    background-color: rgba(255, 71, 87, 0.1);
+    border-left: 4px solid var(--error);
+    color: var(--error);
+    font-size: 0.9rem;
+    border-radius: 4px;
+    text-align: left;
+}
+
+/* Footer y Links */
+.auth-footer {
+    margin-top: var(--sp-xl);
+}
+
+.auth-footer-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.auth-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+    margin-left: 5px;
+}
+
+.auth-link:hover {
+    color: var(--success);
+    text-decoration: underline;
+}

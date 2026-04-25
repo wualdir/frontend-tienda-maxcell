@@ -1,0 +1,71 @@
+<section class="admin-det-container" *ngIf="orden">
+  <header class="admin-det-header">
+    <button class="btn-back" (click)="volver()">← Volver</button>
+    <div class="header-main">
+      <h2 class="admin-det-title">Gestión de Pedido</h2>
+      <span class="admin-det-id">ID: {{ orden.id }}</span>
+    </div>
+  </header>
+
+  <div class="admin-det-grid">
+    <aside class="admin-det-sidebar">
+      <div class="det-card">
+        <h3 class="det-card-title">Resumen</h3>
+        
+        <div class="det-row">
+          <span class="det-label">Estado Actual:</span>
+          <span class="det-value status-pill" [ngClass]="'status-' + orden.estado">
+            {{ orden.estado }}
+          </span>
+        </div>
+
+        <div class="det-row">
+          <span class="det-label">Cliente:</span>
+          <span class="det-value">👤 {{ orden.user.username }}</span>
+        </div>
+
+        <div class="det-row">
+          <span class="det-label">Fecha:</span>
+          <span class="det-value">{{ orden.createdAt | date:'short' }}</span>
+        </div>
+
+        <div class="det-row total-row">
+          <span class="det-label">Total Facturado:</span>
+          <span class="det-value highlight">S/ {{ orden.total | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="det-actions">
+          <button class="btn-action primary">Marcar como Enviado</button>
+          <button class="btn-action danger">Cancelar Pedido</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="admin-det-content">
+      <div class="det-card">
+        <h3 class="det-card-title">Artículos en el Pedido ({{ orden.items.length }})</h3>
+        
+        <div class="det-table-wrapper">
+          <table class="det-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cant.</th>
+                <th>Precio Unit.</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of orden.items">
+                <td class="col-name">{{ item.modelo }}</td>
+                <td class="col-qty">{{ item.cantidad }}</td>
+                <td>S/ {{ item.precio | number:'1.2-2' }}</td>
+                <td class="col-sub">S/ {{ item.precio * item.cantidad | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>

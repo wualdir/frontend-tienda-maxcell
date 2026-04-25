@@ -1,0 +1,85 @@
+<div class="header-acciones">
+  <button class="btn-abrir-filtros" (click)="toggleFiltros()">
+    <span>🔍</span> Filtrar y Ordenar
+  </button>
+</div>
+
+<div class="filtros-overlay" [class.active]="showFiltros" (click)="toggleFiltros()">
+  <div class="filtros-content" (click)="$event.stopPropagation()">
+    
+    <div class="filtros-header">
+      <h3>Filtros</h3>
+      <div class="header-btns">
+        <button class="btn-text" (click)="limpiarFiltros()">Limpiar</button>
+        <button class="btn-cerrar" (click)="toggleFiltros()">✕</button>
+      </div>
+    </div>
+
+    <div class="filtros-body">
+      <section class="filtro-seccion">
+        <label>Marca</label>
+        <select [(ngModel)]="marca">
+          <option value="">Todas las marcas</option>
+          <option *ngFor="let m of marcasDisponibles" [value]="m">{{m}}</option>
+        </select>
+      </section>
+
+      <section class="filtro-seccion">
+        <label>Rango de Precio</label>
+        <div class="input-group">
+          <input type="number" [(ngModel)]="minPrecio" placeholder="Min S/">
+          <input type="number" [(ngModel)]="maxPrecio" placeholder="Max S/">
+        </div>
+      </section>
+
+      <section class="filtro-seccion">
+        <label>Especificaciones</label>
+        <div class="campo-row">
+          <select [(ngModel)]="ram">
+            <option [ngValue]="null">RAM</option>
+            <option [ngValue]="4">4GB</option>
+            <option [ngValue]="8">8GB</option>
+            <option [ngValue]="12">12GB</option>
+          </select>
+          <select [(ngModel)]="almacenamiento">
+            <option [ngValue]="null">Disco</option>
+            <option [ngValue]="128">128GB</option>
+            <option [ngValue]="256">256GB</option>
+            <option [ngValue]="512">512GB</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="filtro-seccion switches">
+        <label class="switch-container">
+          <input type="checkbox" [(ngModel)]="enOferta">
+          <span class="check-label">🔥 Solo Ofertas</span>
+        </label>
+        <label class="switch-container">
+          <input type="checkbox" [(ngModel)]="incluirAgotados">
+          <span class="check-label">Ver productos agotados</span>
+        </label>
+      </section>
+    </div>
+
+    <div class="filtros-footer">
+      <button class="btn-aplicar" (click)="aplicarFiltros()">
+        Mostrar Resultados
+      </button>
+    </div>
+  </div>
+</div>
+
+<main class="tienda-container">
+  <div *ngIf="loading$ | async" class="loading-state">
+    <div class="spinner"></div>
+    <p>Buscando lo mejor para ti...</p>
+  </div>
+
+  <ng-container *ngIf="!(loading$ | async)">
+    <div *ngIf="productos$ | async as productos">
+     <h2 class="titulo-pagina">📱 Catálogo ({{ productos.length }})</h2>
+      <app-list-products [productos]="productos"></app-list-products>
+    </div>
+  </ng-container>
+</main>

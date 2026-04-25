@@ -1,0 +1,58 @@
+<section class="order-container">
+  <header class="order-success-header">
+    <div class="order-icon-check">✓</div>
+    <h1 class="order-main-title">¡Gracias por tu pedido!</h1>
+    <p class="order-subtitle">Hemos recibido tu orden y la estamos procesando.</p>
+  </header>
+
+  <div *ngIf="orden" class="order-card">
+    <div class="order-summary-header">
+      <h2 class="order-section-title">Detalle de la Orden</h2>
+      <span class="order-status-badge">Procesando</span>
+    </div>
+
+    <div class="order-meta-grid">
+      <div class="meta-item">
+        <span class="meta-label">ID de Pedido:</span>
+        <span class="meta-value">#{{ orden.id }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Fecha:</span>
+        <span class="meta-value">{{ orden.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Total Pagado:</span>
+        <span class="meta-value highlight">{{ orden.total | currency:'S/. ' }}</span>
+      </div>
+    </div>
+
+    <hr class="order-divider">
+
+    <h3 class="order-items-title">Productos Comprados</h3>
+    
+    <div class="order-items-list">
+      <div *ngFor="let item of orden.items" class="order-item-row">
+        <div class="order-item-main">
+          <span class="order-item-name">{{ item.modelo }}</span>
+          <span class="order-item-qty">x{{ item.cantidad }}</span>
+        </div>
+        <div class="order-item-price">
+          {{ item.precio * item.cantidad | currency:'S/. ' }}
+        </div>
+      </div>
+    </div>
+
+    <footer class="order-actions">
+      <button class="order-btn-print" (click)="'window.print()'">
+        🖨️ Imprimir Recibo
+      </button>
+      <a routerLink="/tienda" class="order-link-home">
+        Seguir Comprando
+      </a>
+    </footer>
+  </div>
+
+  <div *ngIf="!orden" class="order-loading">
+    <p>Cargando detalles de la orden...</p>
+  </div>
+</section>

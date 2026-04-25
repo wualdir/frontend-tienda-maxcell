@@ -1,0 +1,42 @@
+<article class="auth-container">
+  <h1 class="auth-title">🔐 Acceso</h1>
+  
+  <form class="auth-form" (ngSubmit)="onSubmit()">
+    <div class="auth-field">
+      <input 
+        class="auth-input"
+        type="email" 
+        [(ngModel)]="username" 
+        name="email"
+        placeholder="Correo electrónico"
+        required
+      />
+    </div>
+  
+    <div class="auth-field">
+      <input 
+        class="auth-input"
+        type="password" 
+        [(ngModel)]="password" 
+        name="password"
+        placeholder="Contraseña"
+        required
+      >
+    </div>
+  
+    <button class="auth-btn-submit" type="submit" [disabled]="loading">
+      {{ loading ? 'Iniciando sesión...' : 'Ingresar' }}
+    </button>
+  </form>
+  
+  <div *ngIf="error" class="auth-error-msg">
+    {{ error }}
+  </div>
+
+  <footer class="auth-footer">
+    <p class="auth-footer-text">
+      ¿No tienes cuenta? 
+      <a class="auth-link" routerLink="/register">Regístrate</a>
+    </p>
+  </footer>
+</article>

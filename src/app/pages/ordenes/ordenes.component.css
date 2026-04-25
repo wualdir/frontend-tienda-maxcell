@@ -1,0 +1,159 @@
+.history-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: var(--sp-lg);
+}
+
+.history-header {
+    margin-bottom: var(--sp-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: var(--sp-md);
+}
+
+.history-title {
+    color: var(--text-main);
+    font-size: 2rem;
+    margin-bottom: 4px;
+}
+
+.history-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Lista de Tarjetas */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+}
+
+.history-card {
+    background-color: var(--bg-card);
+    border-radius: var(--sp-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: var(--sp-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.history-card:hover {
+    border-color: var(--accent-blue);
+    transform: translateX(4px);
+}
+
+.history-card-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-md);
+}
+
+.history-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-id {
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.history-date {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.history-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-xl);
+}
+
+.history-total {
+    text-align: right;
+}
+
+.history-total .label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.history-total .value {
+    color: var(--accent-blue);
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.history-status-badge {
+    background-color: rgba(0, 230, 118, 0.1);
+    color: var(--success);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Botón de acción */
+.history-btn-detail {
+    width: 100%;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: var(--sp-sm);
+    border-radius: var(--sp-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.history-btn-detail:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+}
+
+/* Estado Vacío */
+.history-empty {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.history-empty-icon {
+    font-size: 3rem;
+    margin-bottom: var(--sp-md);
+    opacity: 0.5;
+}
+
+.history-btn-shop {
+    display: inline-block;
+    margin-top: var(--sp-lg);
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 700;
+    border-bottom: 2px solid transparent;
+    transition: border 0.3s;
+}
+
+.history-btn-shop:hover {
+    border-bottom-color: var(--accent-blue);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .history-card-main {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .history-stats {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

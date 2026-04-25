@@ -1,0 +1,73 @@
+<section class="prod-form-container">
+  <header class="prod-form-header">
+    <h2 class="prod-form-title">🚀 Nuevo Dispositivo</h2>
+    <p class="prod-form-subtitle">Completa los campos para añadir un producto al catálogo.</p>
+  </header>
+
+  <div class="prod-form-grid">
+    
+    <div class="prod-form-section">
+      <h3 class="section-tag">📦 Identidad</h3>
+      <div class="input-group">
+        <label>Marca</label>
+        <input [(ngModel)]="marca" placeholder="Apple, Samsung, Xiaomi..." class="prod-input">
+      </div>
+      <div class="input-group">
+        <label>Modelo</label>
+        <input [(ngModel)]="modelo" placeholder="Nombre del modelo" class="prod-input">
+      </div>
+      <div class="input-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="descripcion" placeholder="Breve descripción..." class="prod-input" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="prod-form-section">
+      <h3 class="section-tag">💰 Comercial</h3>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Precio Venta (S/)</label>
+          <input [(ngModel)]="precio" type="number" class="prod-input">
+        </div>
+        <div class="input-group">
+          <label>Precio Lista (S/)</label>
+          <input [(ngModel)]="precioOriginal" type="number" class="prod-input">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Stock Inicial</label>
+        <input [(ngModel)]="stock" type="number" class="prod-input">
+      </div>
+    </div>
+
+    <div class="prod-form-section">
+      <h3 class="section-tag">🖼️ Multimedia</h3>
+      <div class="upload-box" [class.has-img]="imagePreview">
+        <img *ngIf="imagePreview" [src]="imagePreview" class="preview-img">
+        <input type="file" (change)="onFile($event)" id="fileInp" hidden accept="image/*">
+        <label for="fileInp" class="upload-label">
+          {{ imagePreview ? '🔄 Cambiar Imagen' : '📁 Subir Foto' }}
+        </label>
+      </div>
+    </div>
+
+    <div class="prod-form-section full-width">
+      <h3 class="section-tag">⚙️ Ficha Técnica</h3>
+      <div class="specs-grid">
+        <div class="input-group"><label>Cámara</label><input [(ngModel)]="specs.espeCamPrincipal" class="prod-input"></div>
+        <div class="input-group"><label>Pantalla</label><input [(ngModel)]="specs.espePantalla" class="prod-input"></div>
+        <div class="input-group"><label>Batería</label><input [(ngModel)]="specs.espeBateria" class="prod-input"></div>
+        <div class="input-group"><label>RAM</label><input [(ngModel)]="specs.espeRam" class="prod-input"></div>
+        <div class="input-group"><label>Almacenamiento</label><input [(ngModel)]="specs.espeAlmacenamiento" class="prod-input"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="prod-form-footer">
+    <button class="btn-cancel" routerLink="/admin/productos">Cancelar</button>
+    <button class="btn-save" (click)="guardar()" [disabled]="loading">
+      {{ loading ? 'Publicando...' : 'Guardar Producto' }}
+    </button>
+  </footer>
+</section>

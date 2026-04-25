@@ -1,0 +1,46 @@
+<article class="auth-container">
+  <h1 class="auth-title">📝 Registro</h1>
+  
+  <form class="auth-form" (ngSubmit)="onSubmit()">
+    <div class="auth-field">
+      <input 
+        class="auth-input"
+        type="text" 
+        [(ngModel)]="username" 
+        name="username"
+        placeholder="Nombre de usuario"
+        required
+      />
+    </div>
+  
+    <div class="auth-field">
+      <input 
+        class="auth-input"
+        type="password" 
+        [(ngModel)]="password" 
+        name="password"
+        placeholder="Contraseña"
+        required
+      >
+    </div>
+  
+    <button class="auth-btn-submit" type="submit" [disabled]="loading">
+      {{ loading ? 'Creando cuenta...' : 'Registrarse' }}
+    </button>
+  </form>
+  
+  <div *ngIf="error" class="auth-error-msg">
+    {{ error }}
+  </div>
+
+  <div *ngIf="success" class="auth-success-msg">
+    {{ success }}
+  </div>
+
+  <footer class="auth-footer">
+    <p class="auth-footer-text">
+      ¿Ya tienes una cuenta? 
+      <a class="auth-link" routerLink="/login">Inicia sesión</a>
+    </p>
+  </footer>
+</article>
