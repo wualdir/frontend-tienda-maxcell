@@ -2,33 +2,38 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Producto } from '../../models/product.model';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment'; // 👈 Ajusta la ruta de importación si es necesario
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminProductoService {
 
-  private url= 'http://localhost:3000/api/productos'
+  // 1. Usamos la URL dinámica
+  private url = `${environment.apiUrl}/productos`;
 
   constructor(private http: HttpClient) { }
 
-  getProducts():Observable<Producto[]>{
-    return this.http.get<Producto[]>(this.url)
+  getProducts(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(this.url);
   }
-   getById(id:string): Observable<Producto> {
+
+  getById(id: string): Observable<Producto> {
     return this.http.get<Producto>(`${this.url}/${id}`);
   }
   
-//===========CRUD===================
+  // =========== CRUD (Admin) ===========
+
   createProduct(data: FormData): Observable<Producto> {
-  return this.http.post<Producto>(this.url, data);
-}
+    // Al usar FormData (para imágenes), el Interceptor se encargará del token
+    return this.http.post<Producto>(this.url, data);
+  }
 
-updateProduct(id: string, data: any): Observable<Producto> {
-  return this.http.put<Producto>(`${this.url}/${id}`, data);
-}
+  updateProduct(id: string, data: any): Observable<Producto> {
+    return this.http.put<Producto>(`${this.url}/${id}`, data);
+  }
 
-deleteProduct(id: string): Observable<any> {
-  return this.http.delete(`${this.url}/${id}`);
-}
+  deleteProduct(id: string): Observable<any> {
+    return this.http.delete(`${this.url}/${id}`);
+  }
 }
