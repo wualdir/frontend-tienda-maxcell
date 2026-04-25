@@ -118,11 +118,11 @@ export class CarritoService {
   }
 
   // ======= Sincronizar Carrito =======
-  syncCart(localCart: CartItem[]): Observable<any> {
-    return this.http.post(`${this.url}/sync`, {
-      items: localCart
-    });
-  }
+ syncCart(localCart: CartItem[]): Observable<CartItem[]> { // 👈 Cambia any por CartItem[]
+  return this.http.post<CartItem[]>(`${this.url}/sync`, {
+    items: localCart
+  });
+}
 
   getLocalCartSync(): CartItem[] {
     return JSON.parse(localStorage.getItem('cart') || '[]');

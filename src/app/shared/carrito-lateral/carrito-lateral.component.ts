@@ -27,24 +27,22 @@ isOpen = false;
   ) {}
 
   ngOnInit() {
-    // Escuchar si el drawer debe abrirse o cerrarse
-    this.subs.add(
-      this.carritoService.cartOpen$.subscribe(open => this.isOpen = open)
-    );
+  // 1. Escuchar apertura/cierre
+  this.subs.add(
+    this.carritoService.cartOpen$.subscribe(open => this.isOpen = open)
+  );
 
-    // 2. 🔥 ESCUCHAR EL CANAL DE DATOS (cart$)
-  // Esto hará que el drawer se actualice solo cuando agregues, quites o cambies cantidad
+  // 2. 🔥 ÚNICA FUENTE DE VERDAD: Escuchar el canal de datos
   this.subs.add(
     this.carritoService.cart$.subscribe(items => {
       this.enriquecerCarrito(items);
     })
   );
 
-  // 3. Carga inicial (dispara el primer flujo de datos)
+  // 3. Solo disparamos la carga inicial. 
+  // getCart ya llama internamente a setCart(), lo que activará la suscripción de arriba.
   this.carritoService.getCart().subscribe();
-    // Cargar y enriquecer el carrito
-    this.loadCart();
-  }
+}
   enriquecerCarrito(items: CartItem[]) {
   // Traemos los productos para sacar el stock real
   this.productService.productos$.subscribe(products => {
