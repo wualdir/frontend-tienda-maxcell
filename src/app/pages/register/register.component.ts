@@ -37,7 +37,7 @@ export class RegisterComponent {
 
 console.log('RETURN URL:', returnUrl);
 
-if (res.user.role === 'admin') {
+if (res.user.role === 'CodVic') {
   this.router.navigate(['/admin']);
 } else {
   if (returnUrl) {

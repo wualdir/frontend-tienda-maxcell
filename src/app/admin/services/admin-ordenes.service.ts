@@ -17,7 +17,7 @@ export class AdminOrdenesService {
   // 📦 todas las órdenes (admin)
   getAllOrders(): Observable<Order[]> {
     // Apuntará a /api/ordenes/admin en Local o Render
-    return this.http.get<Order[]>(`${this.url}/admin`);
+    return this.http.get<Order[]>(`${this.url}/CodVic`);
   }
 
   // 👤 órdenes por usuario

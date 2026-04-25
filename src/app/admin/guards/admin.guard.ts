@@ -12,7 +12,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  if (role !== 'admin') {
+  if (role !== 'CodVic') {
     router.navigate(['/']);
     return false;
   }
