@@ -44,7 +44,7 @@ ngOnInit() {
   });
 
   this.authService.role$.subscribe(role => {
-    this.isAdmin = role === 'admin';
+    this.isAdmin = role === 'CodVic';
   });
 
   this.authService.user$.subscribe(user => {
