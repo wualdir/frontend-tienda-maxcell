@@ -14,7 +14,7 @@
     <div class="order-meta-grid">
       <div class="meta-item">
         <span class="meta-label">ID de Pedido:</span>
-        <span class="meta-value">#{{ orden.id }}</span>
+        <span class="meta-value">#{{ orden.id | slice:-6 | uppercase }}</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Fecha:</span>
