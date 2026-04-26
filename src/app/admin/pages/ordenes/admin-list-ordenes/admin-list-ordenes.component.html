@@ -2,12 +2,11 @@
   <header class="admin-orders-header">
     <h2 class="admin-orders-title">Gestión de Pedidos</h2>
     
-    <div class="admin-orders-meta" *ngIf="ordenes[0] as primera">
-       <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
-       
-       <span *ngIf="primera.user">
-         Cliente ID: <small>{{ primera.user.id }}</small>
-       </span>
+    <div class="admin-orders-meta" *ngIf="ordenes && ordenes.length > 0">
+      <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
+      <span *ngIf="ordenes[0]?.user">
+        Cliente ID: <small>{{ ordenes[0]?.user?.id }}</small>
+      </span>
     </div>
   </header>
 
@@ -24,6 +23,7 @@
       <div class="admin-order-body">
         <div class="admin-order-info">
           <span class="info-label">Cliente:</span>
+          
           <ng-container *ngIf="o.user; else noUser">
             <span class="info-value">👤 {{ o.user.username }}</span>
           </ng-container>
@@ -48,6 +48,11 @@
           Gestionar Pedido
         </a>
       </div>
+
     </article>
+  </div>
+
+  <div *ngIf="ordenes && ordenes.length === 0" class="admin-no-data">
+    <p>No hay órdenes registradas para este usuario.</p>
   </div>
 </div>
