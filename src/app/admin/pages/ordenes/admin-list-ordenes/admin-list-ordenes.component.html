@@ -15,8 +15,9 @@
     <article class="admin-order-card" *ngFor="let o of ordenes">
       
       <div class="admin-order-header">
-        <span class="admin-order-id">#{{ o.id }}</span> 
-        <span class="admin-order-status">
+        <span class="admin-order-id">#{{ o.id | slice:-6 | uppercase }}</span> 
+        
+        <span class="admin-order-status" [ngClass]="'status-' + o.estado.toLowerCase()">
           {{ o.estado }}
         </span>
       </div>
@@ -25,6 +26,7 @@
         <div class="admin-order-info">
           <span class="info-label">Cliente:</span>
           <span class="info-value" *ngIf="o.user">👤 {{ o.user.username }}</span>
+          <span class="info-value" *ngIf="!o.user">👤 No disponible</span>
         </div>
         
         <div class="admin-order-info">
@@ -34,7 +36,7 @@
 
         <div class="admin-order-total">
           <span class="total-label">Monto Total:</span>
-          <span class="total-amount">S/ {{ o.total }}</span>
+          <span class="total-amount">S/ {{ o.total | number:'1.2-2' }}</span>
         </div>
       </div>
 
