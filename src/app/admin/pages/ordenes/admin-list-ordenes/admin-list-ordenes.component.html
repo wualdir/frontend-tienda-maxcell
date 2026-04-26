@@ -1,9 +1,9 @@
 <div class="admin-orders-container">
   <header class="admin-orders-header">
-    <h2 class="admin-orders-title">Órdenes del Usuario</h2>
+    <h2 class="admin-orders-title">Gestión de Pedidos</h2>
     
     <div class="admin-orders-meta" *ngIf="ordenes && ordenes.length > 0">
-       <span class="admin-orders-count">{{ ordenes.length }} Órdenes encontradas</span>
+       <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
        
        <span>
          Cliente ID: <small>{{ ordenes[0]?.user?.id }}</small>
