@@ -1,15 +1,11 @@
 <div class="admin-orders-container">
   <header class="admin-orders-header">
-    <h2 class="admin-orders-title">Gestión de Pedidos</h2>
-    
-    <div class="admin-orders-meta">
-       <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
-       
-       <span *ngIf="ordenes[0] && ordenes[0].user">
-         Cliente ID: <small>{{ ordenes[0].user.id }}</small>
-       </span>
-    </div>
-  </header>
+  <h2 class="admin-orders-title">Gestión de Pedidos</h2>
+  
+  <div class="admin-orders-meta">
+     <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
+     </div>
+</header>
 
   <div class="admin-orders-grid">
     <article class="admin-order-card" *ngFor="let o of ordenes">

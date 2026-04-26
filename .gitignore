@@ -1,5 +1,3 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
 # Compiled output
 /dist
 /tmp
@@ -27,6 +25,11 @@ yarn-error.log
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+
+# 🔒 Entornos Locales (¡Añadido!)
+# Ignoramos los archivos de entorno locales para evitar filtrar claves privadas
+src/environments/environment.development.ts
+src/environments/environment.ts
 
 # Miscellaneous
 /.angular/cache
