@@ -11,7 +11,7 @@ export interface Order {
   estado: string;
   createdAt: string;
 
-  user: {
+  user?: {
     id: string;
     username: string;
     role: string;
