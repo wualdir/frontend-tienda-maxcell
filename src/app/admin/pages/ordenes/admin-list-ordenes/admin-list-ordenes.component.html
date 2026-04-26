@@ -1,7 +1,11 @@
 <div class="admin-orders-container">
   <header class="admin-orders-header">
     <h2 class="admin-orders-title">Gestión de Pedidos</h2>
-    <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
+    
+    <div class="admin-orders-meta" *ngIf="ordenes.length > 0 && ordenes[0].user">
+       <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
+       <span>Cliente ID: <small>{{ ordenes[0].user.id }}</small></span>
+    </div>
   </header>
 
   <div class="admin-orders-grid">
@@ -44,5 +48,9 @@
       </div>
 
     </article>
+  </div>
+
+  <div *ngIf="ordenes.length === 0" class="no-orders-message">
+    No se encontraron órdenes para este criterio.
   </div>
 </div>
