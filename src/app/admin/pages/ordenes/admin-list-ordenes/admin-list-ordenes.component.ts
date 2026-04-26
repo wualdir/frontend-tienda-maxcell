@@ -12,12 +12,21 @@ import { CommonModule } from '@angular/common';
 })
 export class AdminListOrdenesComponent {
 ordenes: Order[] = [];
+  loading = true; // 👈 Agregamos loading para el HTML
 
   constructor(private service: AdminOrdenesService) {}
 
   ngOnInit(): void {
-    this.service.getAllOrders().subscribe(data => {
-      this.ordenes = data;
+    this.loading = true;
+    this.service.getAllOrders().subscribe({
+      next: (data) => {
+        this.ordenes = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar órdenes:', err);
+        this.loading = false;
+      }
     });
   }
 }

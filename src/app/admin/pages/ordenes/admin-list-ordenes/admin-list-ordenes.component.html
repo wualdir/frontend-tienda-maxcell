@@ -16,7 +16,7 @@
       <div class="admin-order-body">
         <div class="admin-order-info">
           <span class="info-label">Cliente:</span>
-          <span class="info-value">👤 {{ o.user.username }}</span>
+          <span class="info-value">👤 {{ o.user?.username || 'Usuario no cargado' }}</span>
         </div>
         
         <div class="admin-order-info">
