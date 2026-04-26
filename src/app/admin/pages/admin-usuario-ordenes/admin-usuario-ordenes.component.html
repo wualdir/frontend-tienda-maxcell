@@ -4,7 +4,7 @@
       <button class="btn-back" routerLink="/admin/clientes">← Volver a Clientes</button>
       <h2 class="user-orders-title">Historial de Pedidos</h2>
     </div>
-    <div class="user-meta" *ngIf="ordenes.length > 0">
+   <div class="user-meta" *ngIf="ordenes.length > 0 && ordenes[0].user">
       <span>Cliente ID: <small>{{ ordenes[0].user.id }}</small></span>
     </div>
   </header>

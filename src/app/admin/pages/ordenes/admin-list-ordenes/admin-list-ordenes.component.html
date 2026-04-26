@@ -5,8 +5,8 @@
     <div class="admin-orders-meta">
        <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
        
-       <span *ngIf="ordenes.length > 0 && ordenes[0].user">
-         Cliente ID: <small>{{ ordenes[0].user!.id }}</small>
+       <span *ngIf="ordenes[0] && ordenes[0].user">
+         Cliente ID: <small>{{ ordenes[0].user.id }}</small>
        </span>
     </div>
   </header>
@@ -15,8 +15,8 @@
     <article class="admin-order-card" *ngFor="let o of ordenes">
       
       <div class="admin-order-header">
-        <span class="admin-order-id">#{{ o.id | slice:-6 | uppercase }}</span> 
-        <span class="admin-order-status" [ngClass]="'status-' + o.estado">
+        <span class="admin-order-id">#{{ o.id }}</span> 
+        <span class="admin-order-status">
           {{ o.estado }}
         </span>
       </div>
@@ -24,13 +24,7 @@
       <div class="admin-order-body">
         <div class="admin-order-info">
           <span class="info-label">Cliente:</span>
-          
-          <ng-container *ngIf="o.user; else noUser">
-            <span class="info-value">👤 {{ o.user.username }}</span>
-          </ng-container>
-          <ng-template #noUser>
-            <span class="info-value">👤 Usuario no disponible</span>
-          </ng-template>
+          <span class="info-value" *ngIf="o.user">👤 {{ o.user.username }}</span>
         </div>
         
         <div class="admin-order-info">
@@ -40,7 +34,7 @@
 
         <div class="admin-order-total">
           <span class="total-label">Monto Total:</span>
-          <span class="total-amount">S/ {{ o.total | number:'1.2-2' }}</span>
+          <span class="total-amount">S/ {{ o.total }}</span>
         </div>
       </div>
 
