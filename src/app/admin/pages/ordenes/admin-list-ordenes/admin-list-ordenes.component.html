@@ -8,7 +8,8 @@
     <article class="admin-order-card" *ngFor="let o of ordenes">
       
       <div class="admin-order-header">
-        <span class="admin-order-id">#{{ o.id.slice(-6) }}</span> <span class="admin-order-status" [ngClass]="'status-' + o.estado">
+        <span class="admin-order-id">#{{ o.id | slice:-6 | uppercase }}</span> 
+        <span class="admin-order-status" [ngClass]="'status-' + o.estado">
           {{ o.estado }}
         </span>
       </div>
@@ -16,7 +17,13 @@
       <div class="admin-order-body">
         <div class="admin-order-info">
           <span class="info-label">Cliente:</span>
-          <span class="info-value">👤 {{ o.user.username || 'Usuario no cargado' }}</span>
+          
+          <ng-container *ngIf="o.user; else noUser">
+            <span class="info-value">👤 {{ o.user.username }}</span>
+          </ng-container>
+          <ng-template #noUser>
+            <span class="info-value">👤 Usuario no disponible</span>
+          </ng-template>
         </div>
         
         <div class="admin-order-info">
