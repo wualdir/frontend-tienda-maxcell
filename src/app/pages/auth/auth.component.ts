@@ -31,19 +31,11 @@ onSubmit() {
   this.authService.login(data).subscribe({
     next: (res) => {
 
-      this.authService.saveToken(
-        res.token,
-        res.user.role,
-        res.user.username
-      );
-
-      this.authService.handlePostAuth();
-
      const returnUrl = localStorage.getItem('returnUrl');
 
 console.log('RETURN URL:', returnUrl);
 
-if (res.user.role === 'CodVic') {
+if (this.authService.isAdmin()) {
   this.router.navigate(['/admin']);
 } else {
   if (returnUrl) {
@@ -53,7 +45,6 @@ if (res.user.role === 'CodVic') {
     this.router.navigate(['/']);
   }
 }
-
       this.loading = false;
     },
 

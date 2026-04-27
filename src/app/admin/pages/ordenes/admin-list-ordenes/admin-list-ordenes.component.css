@@ -1,126 +1,195 @@
-.admin-orders-container {
-    padding: var(--sp-md);
+.admin-container {
+    padding: var(--sp-xl) var(--sp-md);
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-.admin-orders-header {
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--sp-xl);
+}
+
+.admin-title {
+    font-size: 1.8rem;
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+.admin-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* 🚀 Grid de Órdenes */
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--sp-lg);
+   
+}
+
+/* 💳 Estilo de las Cards */
+.order-card {
+    background: var(--bg-card);
+    border: 1px solid rgb(173, 169, 169);
+    border-radius: 20px;
+    padding: var(--sp-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.order-card:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px var(--accent-glow);
+}
+
+/* Encabezado de Card */
+.order-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--sp-lg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid  rgb(173, 169, 169);
     padding-bottom: var(--sp-sm);
 }
 
-.admin-orders-title {
-    color: var(--text-main);
-    font-size: 1.5rem;
-}
-
-.admin-orders-count {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    background: var(--bg-dark);
-    padding: 4px 12px;
-    border-radius: 20px;
-}
-
-/* Grid de Órdenes */
-.admin-orders-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--sp-md);
-}
-
-.admin-order-card {
-    background-color: var(--bg-dark);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--sp-md);
-    padding: var(--sp-md);
-    transition: all 0.3s ease;
-}
-
-.admin-order-card:hover {
-    border-color: var(--accent-blue);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Cabecera de la Card */
-.admin-order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--sp-md);
-}
-
-.admin-order-id {
-    color: var(--accent-blue);
+.order-number {
     font-family: 'Courier New', Courier, monospace;
-    font-weight: 700;
-}
-
-/* Estados Dinámicos */
-.admin-order-status {
-    font-size: 0.7rem;
     font-weight: 800;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 4px;
+    color: var(--accent-blue);
+    font-size: 1.1rem;
 }
 
-.status-pendiente { background-color: rgba(255, 193, 7, 0.1); color: #ffc107; }
-.status-pagado { background-color: rgba(0, 230, 118, 0.1); color: var(--success); }
-.status-enviado { background-color: rgba(0, 163, 255, 0.1); color: var(--accent-blue); }
-.status-cancelado { background-color: rgba(255, 71, 87, 0.1); color: var(--error); }
+.order-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
 
 /* Cuerpo de la Card */
-.admin-order-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-xs);
-    margin-bottom: var(--sp-md);
-}
-
-.admin-order-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-}
-
-.info-label { color: var(--text-muted); }
-.info-value { color: var(--text-main); font-weight: 500; }
-
-.admin-order-total {
-    margin-top: var(--sp-sm);
-    padding-top: var(--sp-sm);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+.order-body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-sm);
+}
+
+.user-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.user-items {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.order-financials {
+    text-align: right;
+}
+
+.total-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin: 0;
 }
 
 .total-amount {
-    color: var(--text-main);
-    font-size: 1.1rem;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--success);
+    margin: 0;
+}
+
+/* Footer y Estados */
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--sp-sm);
+}
+
+.status-pill {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-dark);
 }
 
-/* Botón de Acción */
-.admin-order-btn-view {
-    display: block;
-    text-align: center;
-    background-color: var(--bg-card);
-    color: var(--text-main);
-    text-decoration: none;
-    padding: var(--sp-sm);
-    border-radius: var(--sp-sm);
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s;
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: gray;
 }
 
-.admin-order-btn-view:hover {
-    background-color: var(--accent-blue);
-    border-color: var(--accent-blue);
+/* Colores Dinámicos por Estado */
+.order-card.pendiente .dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+.order-card.pagado .dot { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.order-card.cancelado .dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+.order-card.enviado .dot { background: #423ff1; box-shadow: 0 0 8px #393cee; }
+
+.btn-view {
+    background: transparent;
+    border: 1px solid var(--accent-blue);
+    color: var(--accent-blue);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-view:hover {
+    background: var(--accent-blue);
     color: white;
+}
+
+/* Barra de carga superior */
+.loading-bar {
+    height: 3px;
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    overflow: hidden;
+    margin-bottom: 20px;
+    border-radius: 3px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-blue);
+    width: 40%;
+    animation: loadingAnim 1.5s infinite ease-in-out;
+}
+
+@keyframes loadingAnim {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
 }

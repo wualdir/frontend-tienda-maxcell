@@ -20,4 +20,9 @@ export interface RegisterRequest {
 
 export interface RegisterResponse {
   mensaje: string;
+  token: string;
+  user: {
+    username: string;
+    role: string;
+  };
 }

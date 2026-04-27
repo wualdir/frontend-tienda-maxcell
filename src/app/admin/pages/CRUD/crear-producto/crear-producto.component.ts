@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AdminProductoService } from '../../../services/admin-producto.service';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,38 +12,34 @@ import { CommonModule } from '@angular/common';
   styleUrl: './crear-producto.component.css'
 })
 export class CrearProductoComponent {
-  // Campos del formulario
-  marca = '';
-  modelo = '';
-  precio = 0;
-  precioOriginal = 0;
-  stock = 0;
-  descripcion = '';
-  
-  // Especificaciones agrupadas
-  specs = {
-    espeCamPrincipal: '',
-    espePantalla: '',
-    espeBateria: '',
-    espeRam: '',
-    espeAlmacenamiento: ''
+  private service = inject(AdminProductoService);
+  private router = inject(Router);
+
+  // Modelo de datos limpio
+  producto = {
+    marca: '',
+    modelo: '',
+    precio: 0,
+    precioOriginal: 0,
+    stock: 0,
+    descripcion: '',
+    specs: {
+      espeCamPrincipal: '',
+      espePantalla: '',
+      espeBateria: '',
+      espeRam: '',
+      espeAlmacenamiento: ''
+    }
   };
 
-  // Estado y Archivos
   imagen: File | null = null;
   imagePreview: string | null = null;
   loading = false;
-
-  constructor(
-    private service: AdminProductoService,
-    private router: Router
-  ) {}
 
   onFile(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.imagen = file;
-      // Previsualización de la imagen
       const reader = new FileReader();
       reader.onload = () => this.imagePreview = reader.result as string;
       reader.readAsDataURL(file);
@@ -51,32 +47,34 @@ export class CrearProductoComponent {
   }
 
   guardar() {
-    if (!this.imagen) return alert('Debes subir una imagen');
+    if (!this.imagen) return alert('La imagen del dispositivo es obligatoria');
     
     this.loading = true;
     const formData = new FormData();
 
-    // Campos principales
-    formData.append('marca', this.marca);
-    formData.append('modelo', this.modelo);
-    formData.append('precio', this.precio.toString());
-    formData.append('precioOriginal', this.precioOriginal.toString());
-    formData.append('stock', this.stock.toString());
-    formData.append('descripcion', this.descripcion);
+    // Llenado dinámico para no repetir .append 20 veces
+    Object.entries(this.producto).forEach(([key, value]) => {
+      if (key !== 'specs') {
+        formData.append(key, value.toString());
+      }
+    });
+
+    // Añadir specs
+    Object.entries(this.producto.specs).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
     formData.append('imagen', this.imagen);
 
-    // Especificaciones
-    formData.append('espeCamPrincipal', this.specs.espeCamPrincipal);
-    formData.append('espePantalla', this.specs.espePantalla);
-    formData.append('espeBateria', this.specs.espeBateria);
-    formData.append('espeRam', this.specs.espeRam);
-    formData.append('espeAlmacenamiento', this.specs.espeAlmacenamiento);
-
     this.service.createProduct(formData).subscribe({
-      next: () => this.router.navigate(['/admin/productos']),
+      next: () => {
+        // No necesitamos refrescar nada aquí, el SERVICE ya lo hizo por nosotros
+        this.router.navigate(['/admin/productos']);
+      },
       error: (err) => {
-        console.error(err);
+        console.error('Error al crear:', err);
         this.loading = false;
+        alert('Error al guardar el producto. Revisa la consola.');
       }
     });
   }

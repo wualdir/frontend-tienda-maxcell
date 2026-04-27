@@ -1,0 +1,54 @@
+<section class="admin-container">
+  <header class="admin-header">
+    <div class="header-info">
+      <h2 class="admin-title">👤 Gestión de Clientes</h2>
+    </div>
+  </header>
+
+  <div *ngIf="loading$ | async" class="loading-overlay">
+    <p>Cargando...</p>
+  </div>
+
+  <div class="users-grid" *ngIf="users$ | async as clientes">
+    
+    <ng-container *ngIf="clientes.length > 0; else emptyState">
+      
+      <article *ngFor="let u of clientes" class="user-card" [class.suspended]="!u.active">
+        
+        <div class="user-main">
+          <div class="avatar-box">
+            {{ (u.nombre || u.username).slice(0,1).toUpperCase() }}
+          </div>
+          <div class="user-identity">
+            <h3 class="user-full-name">
+              {{ u.nombre ? (u.nombre + ' ' + u.apellido) : u.username }}
+              <span>{{ getRoleIcon(u.role) }}</span>
+            </h3>
+            <span class="user-username">{{ u.username }}</span>
+          </div>
+        </div>
+
+        <div class="user-contact">
+          <p>📧 {{ u.email || 'Sin email' }}</p>
+          <p *ngIf="u.telefono">📞 {{ u.telefono }}</p>
+        </div>
+
+        <div class="user-actions">
+          <button class="btn-tool" [routerLink]="['/admin/usuarios', u.id, 'ordenes']">
+            🛍️ Ver Órdenes
+          </button>
+          <button class="btn-tool" (click)="cambiarEstado(u.id, u.active)">
+            {{ getEmojiStatus(u.active) }}
+          </button>
+        </div>
+
+      </article>
+    </ng-container>
+
+    <ng-template #emptyState>
+      <div class="empty-card">
+        <p>No hay clientes registrados.</p>
+      </div>
+    </ng-template>
+  </div>
+</section>

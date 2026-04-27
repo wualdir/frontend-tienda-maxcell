@@ -1,107 +1,95 @@
-.prod-form-container {
-  max-width: 1100px;
-  margin: 20px auto;
-  padding: var(--sp-lg);
-}
-
-.prod-form-header { margin-bottom: var(--sp-xl); }
-.prod-form-title { color: var(--text-main); font-size: 2rem; margin: 0; }
-.prod-form-subtitle { color: var(--text-muted); font-size: 0.9rem; }
-
-/* Grid de Formulario */
-.prod-form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--sp-lg);
-}
-
-.prod-form-section {
+.dark-form {
   background: var(--bg-card);
-  padding: var(--sp-lg);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: var(--sp-xl);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-.full-width { grid-column: 1 / -1; }
-
-.section-tag {
-  color: var(--accent-blue);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: var(--sp-lg);
-  display: block;
-}
-
-/* Inputs */
-.input-group { margin-bottom: var(--sp-md); }
-.input-group label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 6px; }
-
-.prod-input {
-  width: 100%;
-  background: var(--bg-dark);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  padding: 12px;
-  border-radius: 6px;
-  outline: none;
-}
-
-.prod-input:focus { border-color: var(--accent-blue); }
-
-.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-md); }
-
-/* Specs */
-.specs-grid {
+.form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--sp-md);
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-xl);
 }
 
-/* Upload Box */
-.upload-box {
-  border: 2px dashed rgba(255, 255, 255, 0.1);
-  height: 200px;
-  border-radius: 8px;
+@media (max-width: 900px) { .form-grid { grid-template-columns: 1fr; } }
+
+.section-title {
+  color: var(--accent-blue);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-md);
+  letter-spacing: 1px;
+}
+
+.input-group {
+  margin-bottom: var(--sp-md);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
+  gap: var(--sp-xs);
 }
 
-.preview-img { width: 100%; height: 100%; object-fit: contain; background: black; }
-
-.upload-label {
-  position: absolute;
-  bottom: 10px;
-  background: rgba(0, 163, 255, 0.8);
-  padding: 6px 15px;
-  border-radius: 20px;
-  color: white;
+label {
   font-size: 0.8rem;
-  cursor: pointer;
-  backdrop-filter: blur(5px);
+  color: var(--text-muted);
 }
 
-/* Footer */
-.prod-form-footer {
-  margin-top: var(--sp-xl);
-  display: flex;
-  justify-content: flex-end;
+input, textarea {
+  background: var(--bg-dark);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-main);
+  padding: 12px;
+  border-radius: 10px;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--sp-md);
+}
+
+/* Estilo para el área de imagen */
+.image-upload {
+  width: 100%;
+  height: 200px;
+  background: var(--bg-dark);
+  border: 2px dashed rgba(255,255,255,0.1);
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  margin-bottom: var(--sp-md);
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .btn-save {
-  background: linear-gradient(135deg, var(--accent-blue), #0066ff);
-  color: white; border: none; padding: 12px 35px; border-radius: 6px;
-  font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px var(--accent-glow);
+  background: var(--accent-blue);
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .btn-cancel {
-  background: transparent; border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text-muted); padding: 12px 25px; border-radius: 6px; cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
 }
-
 @media (max-width: 768px) { .prod-form-grid { grid-template-columns: 1fr; } }

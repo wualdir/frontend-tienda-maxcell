@@ -1,91 +1,87 @@
-<section class="prod-form-container" *ngIf="id">
-  <header class="prod-form-header">
-    <h2 class="prod-form-title">✏️ Editar Dispositivo</h2>
-    <p class="prod-form-subtitle">ID: <span class="highlight-id">{{ id }}</span></p>
+<section class="form-container">
+  <header class="form-header">
+    <h2 class="form-title">✏️ Editar Dispositivo</h2>
+    <p class="form-subtitle">Modificando: <span class="accent">{{ producto.modelo }}</span></p>
   </header>
 
-  <form (ngSubmit)="actualizar()" #productForm="ngForm" class="prod-form-grid">
-    
-    <div class="prod-form-section">
-      <h3 class="section-tag">📦 Identidad</h3>
-      <div class="input-group">
-        <label>Marca</label>
-        <input [(ngModel)]="marca" name="marca" placeholder="Ej: Apple" class="prod-input" required>
-      </div>
-      <div class="input-group">
-        <label>Modelo</label>
-        <input [(ngModel)]="modelo" name="modelo" placeholder="Ej: iPhone 15" class="prod-input" required>
-      </div>
-      <div class="input-group">
-        <label>Descripción</label>
-        <textarea [(ngModel)]="descripcion" name="descripcion" class="prod-input" rows="3"></textarea>
-      </div>
-    </div>
-
-    <div class="prod-form-section">
-      <h3 class="section-tag">💰 Comercial</h3>
-      <div class="input-row">
-        <div class="input-group">
-          <label>Precio Venta (S/)</label>
-          <input [(ngModel)]="precio" name="precio" type="number" class="prod-input" required>
-        </div>
-        <div class="input-group">
-          <label>Precio Lista (S/)</label>
-          <input [(ngModel)]="precioOriginal" name="precioOriginal" type="number" class="prod-input">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>Stock Disponible</label>
-        <input [(ngModel)]="stock" name="stock" type="number" class="prod-input" required>
-      </div>
-    </div>
-
-    <div class="prod-form-section">
-      <h3 class="section-tag">🖼️ Multimedia</h3>
-      <div class="upload-box" [class.has-img]="imagePreview || imagenUrl">
-        <img *ngIf="imagePreview || imagenUrl" [src]="imagePreview || imagenUrl" class="preview-img">
+  <form (ngSubmit)="actualizar()" class="dark-form">
+    <div class="form-grid">
+      
+      <div class="form-section">
+        <h3 class="section-title">📦 Datos del Producto</h3>
         
-        <input type="file" (change)="onFile($event)" id="fileEdit" hidden accept="image/*">
-        <label for="fileEdit" class="upload-label">
-          {{ (imagePreview || imagenUrl) ? '🔄 Reemplazar Imagen' : '📁 Subir Foto' }}
-        </label>
+        <div class="input-group">
+          <label>Modelo</label>
+          <input type="text" [(ngModel)]="producto.modelo" name="modelo" required>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label>Marca</label>
+            <input type="text" [(ngModel)]="producto.marca" name="marca">
+          </div>
+          <div class="input-group">
+            <label>Stock</label>
+            <input type="number" [(ngModel)]="producto.stock" name="stock">
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label>Precio Oferta (S/)</label>
+            <input type="number" [(ngModel)]="producto.precio" name="precio" class="highlight-warn">
+          </div>
+          <div class="input-group">
+            <label>Precio Lista</label>
+            <input type="number" [(ngModel)]="producto.precioOriginal" name="precioOriginal">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="producto.descripcion" name="descripcion" rows="4"></textarea>
+        </div>
       </div>
-      <small class="help-text" *ngIf="!imagePreview && imagenUrl">Imagen actual en el servidor</small>
+
+      <div class="form-section">
+        <h3 class="section-title">🛠️ Ficha Técnica & Imagen</h3>
+        
+        <div class="image-upload" (click)="fileInput.click()">
+          <input type="file" #fileInput (change)="onFile($event)" hidden>
+          
+         <img [src]="imagePreview || imagenUrlActual || 'https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png'" class="preview-img">
+          
+          <div class="upload-overlay">
+            <span>Cambiar Imagen 📸</span>
+          </div>
+        </div>
+
+        <div class="specs-grid">
+          <div class="input-group">
+            <label>Cámara Principal</label>
+            <input type="text" [(ngModel)]="producto.specs.espeCamPrincipal" name="cam">
+          </div>
+          <div class="input-group">
+            <label>Pantalla</label>
+            <input type="text" [(ngModel)]="producto.specs.espePantalla" name="pan">
+          </div>
+          <div class="input-group">
+            <label>Batería</label>
+            <input type="text" [(ngModel)]="producto.specs.espeBateria" name="bat">
+          </div>
+          <div class="input-group">
+            <label>Memoria RAM</label>
+            <input type="text" [(ngModel)]="producto.specs.espeRam" name="ram">
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="prod-form-section full-width">
-      <h3 class="section-tag">⚙️ Ficha Técnica</h3>
-      <div class="specs-grid">
-        <div class="input-group">
-          <label>Cámara</label>
-          <input [(ngModel)]="specs.espeCamPrincipal" name="camara" class="prod-input">
-        </div>
-        <div class="input-group">
-          <label>Pantalla</label>
-          <input [(ngModel)]="specs.espePantalla" name="pantalla" class="prod-input">
-        </div>
-        <div class="input-group">
-          <label>Batería</label>
-          <input [(ngModel)]="specs.espeBateria" name="bateria" class="prod-input">
-        </div>
-        <div class="input-group">
-          <label>RAM</label>
-          <input [(ngModel)]="specs.espeRam" name="ram" class="prod-input">
-        </div>
-        <div class="input-group">
-          <label>Almacenamiento</label>
-          <input [(ngModel)]="specs.espeAlmacenamiento" name="almacenamiento" class="prod-input">
-        </div>
-      </div>
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" routerLink="/admin/productos">Volver</button>
+      <button type="submit" class="btn-save update" [disabled]="loading">
+        {{ loading ? 'Actualizando...' : '💾 Guardar Cambios' }}
+      </button>
     </div>
-
-    <footer class="prod-form-footer full-width">
-      <button type="button" class="btn-cancel" routerLink="/admin/productos">
-        Cancelar
-      </button>
-      <button type="submit" class="btn-save" [disabled]="loading || !productForm.valid">
-        {{ loading ? 'Actualizando...' : 'Guardar Cambios' }}
-      </button>
-    </footer>
   </form>
 </section>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, finalize, tap } from 'rxjs';
 import { User } from '../models/user.model';
 import { Order } from '../models/admin-ordenes.model';
 import { environment } from '../../../environments/environment';
@@ -9,22 +9,45 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class AdminUsuariosService {
-
-  // 1. Centralizamos la URL usando la base del environment
+  private http = inject(HttpClient);
   private url = `${environment.apiUrl}/usuarios`;
 
-  constructor(private http: HttpClient) {}
+  // ======= Estado Reactivo =======
+  private usersSubject = new BehaviorSubject<User[]>([]);
+  users$ = this.usersSubject.asObservable();
 
-  // Obtener todos los usuarios (Vista de Admin)
-  getUsers(): Observable<User[]> {
-    // Apuntará a /api/usuarios en Local o Render
-    return this.http.get<User[]>(this.url);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
+
+  // ======= Métodos =======
+
+  /**
+   * Carga la lista global de usuarios y actualiza el flujo users$
+   */
+  obtenerUsuarios() {
+    this.loadingSubject.next(true);
+    this.http.get<User[]>(this.url).pipe(
+      finalize(() => this.loadingSubject.next(false))
+    ).subscribe({
+      next: (data) => this.usersSubject.next(data),
+      error: (err) => console.error('Error cargando usuarios:', err)
+    });
   }
 
-  // Obtener órdenes de un usuario específico
+  /**
+   * Obtiene las órdenes de un usuario específico
+   * Este se mantiene como Observable directo ya que suele ser para una vista de detalle
+   */
   getOrdersByUser(id: string): Observable<Order[]> {
-    return this.http.get<Order[]>(
-      `${this.url}/users/${id}/orders`
+    return this.http.get<Order[]>(`${this.url}/users/${id}/orders`);
+  }
+
+  /**
+   * Ejemplo de acción administrativa: Bloquear/Desbloquear usuario
+   */
+  toggleUserStatus(id: string, active: boolean): Observable<any> {
+    return this.http.patch(`${this.url}/${id}`, { active }).pipe(
+      tap(() => this.obtenerUsuarios()) // Refresca la lista automáticamente
     );
   }
 }

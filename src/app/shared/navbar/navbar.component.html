@@ -4,7 +4,7 @@
     <a routerLink="/home" class="main-navbar1__logo-link">
       <img class="main-navbar1__logo" src="/Mi-Logo3.svg" alt="Max Cell Logo">
     </a>
-    <p class="main-navbar1__usuarioActivo" *ngIf="nombreAct">usuario, {{ nombreAct }}</p>
+    <p class="main-navbar1__usuarioActivo" *ngIf="isLoggedIn$ | async" >usuario, {{ user$ | async }}</p>
    
     <ul class="main-navbar1__list">
       <li class="main-navbar1__item">
@@ -14,29 +14,31 @@
         </a>
       </li>
 
-      @if (estaLogueado) {
+    
         <li class="main-navbar1__item">
-           <a routerLink="/ordenes" class="main-navbar1__pedidos">Mis pedidos</a>
+           <a *ngIf="isLoggedIn$ | async" routerLink="/ordenes" class="main-navbar1__pedidos">Mis pedidos</a>
         </li>
-      }
+      
 
       <li class="main-navbar1__item">
         <a  class="main-navbar1__cart">
           <span class="material-symbols-outlined">shopping_cart</span>
-          @if (cartCount > 0) {
-            <span class="main-navbar1__carrito" (click)="verCarrito()">{{ cartCount }}</span>
-          }
+         <span class="main-navbar1__carrito" 
+      *ngIf="(cartCount$ | async) as count" 
+      (click)="verCarrito()">
+  {{ count > 0 ? count : '' }}
+</span>
         </a>
       </li>
 
-      @if (estaLogueado) {
+     
         <li class="main-navbar1__item">
-          <button (click)="cerraSesion()" class="main-navbar1__logout">
-            <span class="material-symbols-outlined">logout</span>
+          <button *ngIf="isLoggedIn$ | async" (click)="cerraSesion()" class="main-navbar1__logout">
+            <span  class="material-symbols-outlined">logout</span>
             Cerrar sesión
           </button>
         </li>
-      }
+      
     </ul>
   </nav>
 
@@ -69,7 +71,7 @@
     </div>
 
     <div class="main-navbar3__links-right">
-       <li class="main-navbar3__admin-item" *ngIf="isAdmin">
+       <li class="main-navbar3__admin-item" *ngIf="isAdmin$ | async">
          <a class="main-navbar3__link main-navbar3__link--admin" routerLink="/admin">panel</a>
        </li>
     </div>

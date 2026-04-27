@@ -1,47 +1,69 @@
-<div class="admin-orders-container">
-  <header class="admin-orders-header">
-  <h2 class="admin-orders-title">Gestión de Pedidos</h2>
-  
-  <div class="admin-orders-meta">
-     <span class="admin-orders-count">{{ ordenes.length }} Órdenes totales</span>
-     </div>
-</header>
+<section class="admin-container">
+  <header class="admin-header">
+    <div class="header-info">
+      <h2 class="admin-title">📦 Panel de Pedidos</h2>
+      <p class="admin-subtitle">Monitoreo de ventas y estados de entrega en tiempo real.</p>
+    </div>
+    <button class="btn-refresh" (click)="refrescar()" [disabled]="loading$ | async">
+      <span class="icon">🔄</span>
+    </button>
+  </header>
 
-  <div class="admin-orders-grid">
-    <article class="admin-order-card" *ngFor="let o of ordenes">
-      
-      <div class="admin-order-header">
-        <span class="admin-order-id">#{{ o.id | slice:-6 | uppercase }}</span> 
-        
-        <span class="admin-order-status" [ngClass]="'status-' + o.estado.toLowerCase()">
-          {{ o.estado }}
-        </span>
-      </div>
-
-      <div class="admin-order-body">
-        <div class="admin-order-info">
-          <span class="info-label">Cliente:</span>
-          <span class="info-value" *ngIf="o.user">👤 {{ o.user.username }}</span>
-          <span class="info-value" *ngIf="!o.user">👤 No disponible</span>
-        </div>
-        
-        <div class="admin-order-info">
-          <span class="info-label">Artículos:</span>
-          <span class="info-value">📦 {{ o.items.length }} producto(s)</span>
-        </div>
-
-        <div class="admin-order-total">
-          <span class="total-label">Monto Total:</span>
-          <span class="total-amount">S/ {{ o.total | number:'1.2-2' }}</span>
-        </div>
-      </div>
-
-      <div class="admin-order-actions">
-        <a class="admin-order-btn-view" [routerLink]="['/admin/ordenes', o.id]">
-          Gestionar Pedido
-        </a>
-      </div>
-
-    </article>
+  <div class="loading-bar" *ngIf="loading$ | async">
+    <div class="progress-fill"></div>
   </div>
-</div>
+
+  <div class="orders-grid" *ngIf="ordenes$ | async as lista; else loading">
+    
+    <ng-container *ngIf="lista.length > 0; else emptyState">
+      <article *ngFor="let o of lista" class="order-card" [ngClass]="o.estado.toLowerCase()">
+        
+        <div class="order-header">
+          <span class="order-number">#{{ o.id.slice(-6).toUpperCase() }}</span>
+          <span class="order-date">{{ o.createdAt | date:'dd MMM, HH:mm' }}</span>
+        </div>
+
+        <div class="order-body">
+          <div class="user-info">
+            <div class="user-icon">👤</div>
+            <div class="user-details">
+              <p class="user-name">{{ o.user.username || 'Usuario Invitado' }}</p>
+              <p class="user-items">{{ o.items.length }} {{ o.items.length === 1 ? 'producto' : 'productos' }}</p>
+            </div>
+          </div>
+
+          <div class="order-financials">
+            <p class="total-label">Total Pago</p>
+            <p class="total-amount">{{ o.total | currency:'USD' }}</p>
+          </div>
+        </div>
+
+        <div class="order-footer">
+          <div class="status-pill">
+            <span class="dot"></span>
+            {{ o.estado }}
+          </div>
+          
+          <div class="actions">
+            <button class="btn-view" [routerLink]="['/admin/ordenes', o.id]">
+              Ver Detalle 📑
+            </button>
+          </div>
+        </div>
+
+      </article>
+    </ng-container>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <p>📭 No hay órdenes procesadas en el sistema.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-state" *ngIf="!(loading$ | async)">
+      <p>Conectando con el servidor...</p>
+    </div>
+  </ng-template>
+</section>

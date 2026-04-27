@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Producto } from '../../../../models/product.model';
 import { AdminProductoService } from '../../../services/admin-producto.service';
 import { RouterLink } from '@angular/router';
@@ -11,26 +11,21 @@ import { CommonModule } from '@angular/common';
   styleUrl: './products.component.css'
 })
 export class ProductsComponent {
- productos: Producto[] = [];
-
-  constructor(private service: AdminProductoService) {}
+ private adminService = inject(AdminProductoService);
+  
+  productos$ = this.adminService.productos$;
+  loading$ = this.adminService.loading$;
 
   ngOnInit() {
-    this.cargarProductos();
+    this.adminService.obtenerProductos();
   }
 
-  cargarProductos() {
-    this.service.getProducts().subscribe(res => {
-      this.productos = res;
-    });
-  }
 
   eliminar(id: string) {
     if (confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
-      this.service.deleteProduct(id).subscribe(() => {
-        // Filtramos el array localmente para no recargar toda la página
-        this.productos = this.productos.filter(p => p.id !== id);
+      this.adminService.deleteProduct(id).subscribe({
+        next: () => console.log('Producto eliminado y lista actualizada'),
+        error: (err) => alert('Error al eliminar: ' + err.message)
       });
-    }
-  }
+    }}
 }

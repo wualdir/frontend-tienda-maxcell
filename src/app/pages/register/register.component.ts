@@ -20,42 +20,38 @@ export class RegisterComponent {
 
   constructor(private authService: AuthService,private router:Router) {}
 
-  onSubmit() {
-    this.loading = true;
-    this.error = null;
-    this.success = null;
+ onSubmit() {
+  this.loading = true;
+  this.error = null;
+  this.success = null;
 
-    const data: RegisterRequest = {username: this.username,password: this.password};
-    this.authService.register(data).subscribe({next: () => {
+  const data: RegisterRequest = { username: this.username, password: this.password };
 
-    // 🔥 hacer login automático
-    this.authService.login({username: data.username,password: data.password}).subscribe({
-      next: (res) => {
-        this.authService.saveToken(res.token,res.user.role,res.user.username);
-        this.authService.handlePostAuth();
-          const returnUrl = localStorage.getItem('returnUrl');
+  this.authService.register(data).subscribe({
+    next: (res) => {
+      // 🚀 ¡MAGIA! El servicio ya guardó el token y sincronizó el carrito en el tap.
+      this.success = 'Usuario creado y logueado con éxito';
+      
+      const returnUrl = localStorage.getItem('returnUrl');
 
-console.log('RETURN URL:', returnUrl);
-
-if (res.user.role === 'CodVic') {
-  this.router.navigate(['/admin']);
-} else {
-  if (returnUrl) {
-    localStorage.removeItem('returnUrl');
-    this.router.navigateByUrl(returnUrl);
-  } else {
-    this.router.navigate(['/']);
-  }
-}
-
-         
+      // Usamos el método isAdmin del servicio para mayor limpieza
+      if (this.authService.isAdmin()) {
+        this.router.navigate(['/admin']);
+      } else {
+        if (returnUrl) {
+          localStorage.removeItem('returnUrl');
+          this.router.navigateByUrl(returnUrl);
+        } else {
+          this.router.navigate(['/']);
+        }
       }
-    });
-  
-
-  },
-  error: (err) => console.error(err)
-});
-
-  }
+      this.loading = false;
+    },
+    error: (err) => {
+      this.error = 'Error al registrar el usuario';
+      this.loading = false;
+      console.error(err);
+    }
+  });
+}
 }

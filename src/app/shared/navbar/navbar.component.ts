@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CarritoService } from '../../services/carrito.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -14,61 +14,54 @@ import { ProductService } from '../../services/product.service';
 export class NavbarComponent {
  //carrito global
   cartCount = 0;
- //para el nombre del usuario
- nombreAct : string = ''
- //para el rol 
- isAdmin = false
- // Variable que usaremos en el HTML
-  estaLogueado: boolean = false;
   //para el menu hamburgesa
   isOpen= false
   //para busqueda navbar
 searchTerm: string = '';
 resultados: any[] = [];
+
+// 1. Inyectamos el servicio fuera del constructor
+private authService = inject(AuthService);
+private carritoService = inject(CarritoService);
+// 2. Ahora sí podemos usarlo aquí mismo
+  isAdmin$ = this.authService.isAdmin$;
+  isLoggedIn$ = this.authService. isLoggedIn$;
+  user$ = this.authService.user$;
+  cartCount$ = this.carritoService.cartCount$;
+ 
+
 constructor(
-  private carritoService: CarritoService,
-  private authService:AuthService,
   private router:Router,
   private productService:ProductService
 ) {}
 
-
 ngOnInit() {
-
-  this.carritoService.cartCount$.subscribe(count => {
-    this.cartCount = count;
-  });
-
-  this.authService.isLoggedIn$.subscribe(estado => {
-    this.estaLogueado = estado;
-  });
-
-  this.authService.role$.subscribe(role => {
-    this.isAdmin = role === 'CodVic';
-  });
-
-  this.authService.user$.subscribe(user => {
-    this.nombreAct = user || '';
-  });
+  // 🚀 Le pedimos al servicio que inicialice el carrito.
+  // Como el servicio tiene un 'tap', al ejecutarse esto, 
+  // el cartCount$ del Navbar se actualizará solo.
+  this.carritoService.getCart().subscribe();
 }
 
 buscar() {
   const texto = this.searchTerm?.trim() || '';
-  // 🔥 SI ESTÁ VACÍO → IR A LISTA
+
+  // 1. Si está vacío, limpiamos y mandamos a la tienda
   if (texto === '') {
-    this.resultados = [];
-    this.router.navigate(['/tienda']); // 👈 CLAVE
+    this.productService.getProductosFiltrados({}); // Mandamos filtros vacíos para resetear
+    this.router.navigate(['/tienda']);
     return;
   }
 
-  if (texto.length < 2) {
-    return;
-  }
+  if (texto.length < 2) return;
 
-  this.productService.searchProducts(texto)
-    .subscribe(data => {
-      this.resultados = data;
-    });
+  // 2. 🚀 LA CORRECCIÓN: Solo llamamos al método. 
+  // No hay .subscribe() porque el resultado caerá solo en el flujo 'productos$'
+  this.productService.getProductosFiltrados({ q: texto });
+  
+  // Opcional: Si quieres que al buscar siempre te lleve a la página de tienda para ver resultados
+  if (this.router.url !== '/tienda') {
+    this.router.navigate(['/tienda']);
+  }
 }
 // ================para el boton de busqueda===========
 buscarConBoton() {
@@ -120,6 +113,8 @@ cerraSesion(){
 
 onLogout() {
     this.authService.logout();
+    // Opcional: limpiar carrito al salir
+    this.carritoService.clearCart().subscribe();
   }
 
 }

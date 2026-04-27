@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../models/auth.model'
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { CarritoService } from './carrito.service';
 import { environment } from '../../environments/environment';
 
@@ -10,11 +10,8 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
   // 1. Centralizamos la base. 
-  // Si environment.apiUrl es 'https://api-maxcell.onrender.com/api'
   private baseUrl = environment.apiUrl; 
 
-  // --- BORRAMOS las variables locales fijas ---
-  
   private loggedIn = new BehaviorSubject<boolean>(!!localStorage.getItem('token'));
   isLoggedIn$ = this.loggedIn.asObservable();
   
@@ -26,30 +23,64 @@ export class AuthService {
 
   constructor(private http: HttpClient, private carritoService: CarritoService) { }
 
+  // Método para verificar si es Admin (CodVic)
+isAdmin(): boolean {
+  // Obtenemos el valor directamente del Subject o del localStorage
+  return this.roleSubject.value === 'CodVic';
+}
+
+// Opcional: Un observable por si quieres reaccionar a cambios de rol en tiempo real
+isAdmin$ = this.roleSubject.asObservable().pipe(
+  map(role => role === 'CodVic')
+);
+
+
   // 2. Adaptamos el Login
   login(data: LoginRequest): Observable<LoginResponse> {
     // Usamos `${this.baseUrl}/auth/login`
-    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, data);
+    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, data).pipe(
+    // 1. Usamos TAP para efectos secundarios (guardar datos)
+    tap((res) => {
+      // Si la respuesta es exitosa, el servicio se actualiza a sí mismo
+      this.saveToken(res.token, res.user.role, res.user.username);
+      console.log('Estado de autenticación actualizado automáticamente');
+      this.handlePostAuth()
+    }),
+    // 2. Usamos catchError para manejar fallos de red o de servidor
+    catchError((error) => {
+      console.error('Error en el login:', error);
+      // Aquí podrías disparar una notificación de alerta
+      return throwError(() => error);
+    })
+  );;
   }
 
-  // 3. Adaptamos el Register
-  register(data: RegisterRequest): Observable<RegisterResponse> {
-    // Usamos `${this.baseUrl}/auth/register`
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/auth/register`, data);
-  }
+ register(data: RegisterRequest): Observable<RegisterResponse> {
+  return this.http.post<RegisterResponse>(`${this.baseUrl}/auth/register`, data).pipe(
+    tap((res) => {
+      // 🚀 AUTOMATIZACIÓN: Si el registro es exitoso, el servicio se auto-loguea
+      if (res.token && res.user) {
+        this.saveToken(res.token, res.user.role, res.user.username);
+        this.handlePostAuth(); 
+        console.log('Registro y login automático completado');
+      }
+    }),
+    catchError((error) => {
+      console.error('Error en el proceso de registro:', error);
+      return throwError(() => error);
+    })
+  );
+}
 
-  // ... El resto del código (saveToken, logout, etc.) se queda igual
-  // ya que no usan URLs externas directamente.
-
-  saveToken(token: string, role: string, username: string) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
-    localStorage.setItem('username', username);
-    this.loggedIn.next(true);
-    this.userSubject.next(username);
-    this.roleSubject.next(role);
-  }
-
+// ⚠️ ESTE SE QUEDA IGUAL, NO LO BORRES
+saveToken(token: string, role: string, username: string) {
+  localStorage.setItem('token', token);
+  localStorage.setItem('role', role);
+  localStorage.setItem('username', username);
+  this.loggedIn.next(true);
+  this.userSubject.next(username);
+  this.roleSubject.next(role);
+}
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
@@ -67,22 +98,25 @@ export class AuthService {
 // auth.service.ts (Actualiza este método)
 
 handlePostAuth(): void {
-  const localCart = this.carritoService.getLocalCartSync();
+  // 1. Usamos el método que lee directamente el arreglo del localStorage
+  // Asegúrate de que en el CarritoService diga: public getLocalCart()
+  const localCart = this.carritoService.getLocalCart();
   
-  if (localCart.length > 0) {
-    // Sincronizamos y el 'tap' del servicio se encargará de llamar a setCart
+  if (localCart && localCart.length > 0) {
+    // 2. Sincronizamos. 
+    // Nota: El 'tap' dentro de syncCart ya se encarga de hacer el setCart([]) 
+    // y de limpiar el localStorage si lo configuramos así.
     this.carritoService.syncCart(localCart).subscribe({
       next: () => {
-        localStorage.removeItem('cart');
         console.log('Sincronización exitosa post-auth');
       },
-      error: () => {
-        // Si falla la sincronización, al menos intentamos recuperar lo que haya en BD
+      error: (err) => {
+        console.error('Error sincronizando, recargando carrito de la nube...', err);
         this.carritoService.getCart().subscribe();
       }
     });
   } else {
-    // Si no había nada local, traemos lo de la nube
+    // 3. Si no hay nada local, forzamos la carga desde la nube
     this.carritoService.getCart().subscribe();
   }
 }

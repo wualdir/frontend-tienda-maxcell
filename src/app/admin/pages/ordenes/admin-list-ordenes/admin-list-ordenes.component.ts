@@ -1,32 +1,33 @@
-import { Component } from '@angular/core';
-import { Order } from '../../../models/admin-ordenes.model';
-import { AdminOrdenesService } from '../../../services/admin-ordenes.service';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { AdminOrdenesService } from '../../../services/admin-ordenes.service';
 
 @Component({
   selector: 'app-admin-list-ordenes',
-  imports: [RouterLink,CommonModule],
+  standalone: true,
+  imports: [RouterLink, CommonModule],
   templateUrl: './admin-list-ordenes.component.html',
   styleUrl: './admin-list-ordenes.component.css'
 })
-export class AdminListOrdenesComponent {
-ordenes: Order[] = [];
-  loading = true; // 👈 Agregamos loading para el HTML
+export class AdminListOrdenesComponent implements OnInit {
+  // 🚀 Inyección moderna con 'inject'
+  private ordersService = inject(AdminOrdenesService);
 
-  constructor(private service: AdminOrdenesService) {}
+  // 📺 Conectamos directamente a los flujos del servicio
+  // Usar el signo $ al final es una convención para indicar que son Observables
+  ordenes$ = this.ordersService.orders$;
+  loading$ = this.ordersService.loading$;
 
   ngOnInit(): void {
-    this.loading = true;
-    this.service.getAllOrders().subscribe({
-      next: (data) => {
-        this.ordenes = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar órdenes:', err);
-        this.loading = false;
-      }
-    });
+    // Solo llamamos a la acción. El componente no "guarda" la data, solo la observa.
+    this.ordersService.obtenerTodasLasOrdenes();
+  }
+
+  /**
+   * Método opcional para refrescar manualmente
+   */
+  refrescar(): void {
+    this.ordersService.obtenerTodasLasOrdenes(true);
   }
 }

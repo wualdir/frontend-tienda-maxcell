@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Order } from '../../models/admin-ordenes.model';
-import { AdminUsuariosService } from '../../services/admin-usuarios.service';
+import { Order } from '../../../models/admin-ordenes.model';
+import { AdminUsuariosService } from '../../../services/admin-usuarios.service';
 
 @Component({
   selector: 'app-admin-usuario-ordenes',

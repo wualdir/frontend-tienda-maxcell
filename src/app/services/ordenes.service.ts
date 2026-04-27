@@ -14,10 +14,11 @@ export class OrdenesService {
 
   constructor(private http: HttpClient) {}
 
-  // 🧾 crear orden
-  createOrder(): Observable<any> {
-    // Ahora apuntará a /api/ordenes en el servidor correcto
-    return this.http.post(this.url, {});
+  // 🧾 Crear orden
+  // Es buena práctica pasarle el carrito o los datos de la orden
+  // aunque el backend lo saque de la sesión/token.
+  createOrder(orderData?: any): Observable<any> {
+    return this.http.post(this.url, orderData || {});
   }
 
   // 📦 mis órdenes

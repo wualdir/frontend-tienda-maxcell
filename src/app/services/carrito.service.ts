@@ -2,161 +2,146 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { CartItem } from '../models/carrito.model';
-import { environment } from '../../environments/environment'; // 👈 Importamos environment
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarritoService {
-
-  // 1. Centralizamos la URL usando la base del environment
+  // 1. URL base centralizada
   private url = `${environment.apiUrl}/carrito`; 
+
+  // ======= Estado del Carrito (Fuentes de Verdad) =======
+  private cartCount = new BehaviorSubject<number>(0);
+  cartCount$ = this.cartCount.asObservable(); // Para el Navbar
+
+  private cart = new BehaviorSubject<CartItem[]>([]);
+  cart$ = this.cart.asObservable(); // Para la página del carrito
+
+  private cartOpen = new BehaviorSubject<boolean>(false);
+  cartOpen$ = this.cartOpen.asObservable(); // Para abrir/cerrar el modal
 
   constructor(private http: HttpClient) {}
 
-  // ======= Estado del Carrito =======
-  private cartCount = new BehaviorSubject<number>(0);
-  cartCount$ = this.cartCount.asObservable();
+  // ======= Ayudantes Privados (Optimización de Código) =======
+  
+  public getLocalCart(): CartItem[] {
+    return JSON.parse(localStorage.getItem('cart') || '[]');
+  }
 
-  private cart = new BehaviorSubject<CartItem[]>([]);
-  cart$ = this.cart.asObservable();
-
-  private cartOpen = new BehaviorSubject<boolean>(false);
-  cartOpen$ = this.cartOpen.asObservable();
+  private saveLocalCart(cart: CartItem[]): void {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    this.setCart(cart); // Actualiza los observables al instante
+  }
 
   // ======= Control Visual =======
   toggleCart() { this.cartOpen.next(!this.cartOpen.value); }
   openCart() { this.cartOpen.next(true); }
   closeCart() { this.cartOpen.next(false); }
 
+  // Actualiza el estado global y el contador
   setCart(items: CartItem[]) {
     this.cart.next(items);
     const total = items.reduce((acc, item) => acc + item.cantidad, 0);
     this.cartCount.next(total);
   }
 
-  // ======= Agregar Productos =======
+  // ======= Lógica Principal de Productos =======
+
+  // Obtener el carrito (Iniciador)
+  getCart(): Observable<CartItem[]> {
+    const isLogged = !!localStorage.getItem('token');
+    
+    if (!isLogged) {
+      const cart = this.getLocalCart();
+      this.setCart(cart);
+      return of(cart);
+    }
+
+    return this.http.get<CartItem[]>(this.url).pipe(
+      tap(items => this.setCart(items))
+    );
+  }
+
+  // Agregar producto
   addToCart(product: CartItem): Observable<any> {
     const isLogged = !!localStorage.getItem('token');
 
     if (!isLogged) {
-      let cart: CartItem[] = JSON.parse(localStorage.getItem('cart') || '[]');
+      let cart = this.getLocalCart();
       const existe = cart.find(item => item.id === product.id);
-      if (existe) {
-        existe.cantidad += product.cantidad;
-      } else {
-        cart.push(product);
-      }
-      localStorage.setItem('cart', JSON.stringify(cart));
-      this.setCart(cart);
+      existe ? (existe.cantidad += product.cantidad) : cart.push(product);
+      this.saveLocalCart(cart);
       return of(cart);
     }
 
-    // 🔐 LOGUEADO: Usa la nueva URL dinámica
-    return new Observable(observer => {
-      this.http.post<CartItem[]>(this.url, { producto: product }).subscribe(items => {
-        this.setCart(items);
-        observer.next(items);
-        observer.complete();
-      });
-    });
+    return this.http.post<CartItem[]>(this.url, { producto: product }).pipe(
+      tap(items => this.setCart(items))
+    );
   }
 
-  // ======= Obtener Productos =======
- // carrito.service.ts
-getCart(): Observable<CartItem[]> {
-  const token = localStorage.getItem('token');
-  
-  if (!token) {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    this.setCart(cart);
-    return of(cart);
-  }
-
-  // Si está logueado, forzamos la petición al servidor y actualizamos el chorro de datos ($)
-  return this.http.get<CartItem[]>(this.url).pipe(
-    tap(items => {
-      console.log('CARRITO RECUPERADO DEL SERVIDOR:', items);
-      this.setCart(items); // 👈 Esto es lo que le avisa a todos los componentes
-    })
-  );
-}
-
-  // ======= Remover Items =======
+  // Quitar un producto por ID
   removeFromCart(id: string): Observable<any> {
     const isLogged = !!localStorage.getItem('token');
 
     if (!isLogged) {
-      let cart: CartItem[] = JSON.parse(localStorage.getItem('cart') || '[]');
-      cart = cart.filter(item => item.id !== id);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      this.setCart(cart);
+      const cart = this.getLocalCart().filter(item => item.id !== id);
+      this.saveLocalCart(cart);
       return of(cart);
     }
 
-    // 🔐 LOGUEADO: DELETE a la URL dinámica
-    return new Observable(observer => {
-      this.http.delete<CartItem[]>(`${this.url}/${id}`).subscribe(items => {
-        this.setCart(items);
-        observer.next(items);
-        observer.complete();
-      });
-    });
+    return this.http.delete<CartItem[]>(`${this.url}/${id}`).pipe(
+      tap(items => this.setCart(items))
+    );
   }
 
-  // ======= Limpiar Carrito =======
- // 2. Asegúrate de que clearCart también limpie el estado reactivo
-clearCart(): Observable<any> {
-  const isLogged = !!localStorage.getItem('token');
-  if (!isLogged) {
-    localStorage.removeItem('cart');
-    this.setCart([]);
-    return of({ mensaje: 'carrito limpiado' });
-  }
-  return this.http.delete<CartItem[]>(this.url).pipe(
-    tap(() => this.setCart([])) // 🔥 Limpia el canal visual al instante
-  );
-}
-
-  // ======= Sincronizar Carrito =======
-// 1. Asegúrate de que syncCart emita los nuevos datos
-syncCart(localCart: CartItem[]): Observable<CartItem[]> {
-  return this.http.post<CartItem[]>(`${this.url}/sync`, { items: localCart }).pipe(
-    tap(itemsActualizados => {
-      // 🔥 ESTO ES CLAVE: Notifica a toda la app el nuevo estado
-      this.setCart(itemsActualizados); 
-    })
-  );
-}
-
-  getLocalCartSync(): CartItem[] {
-    return JSON.parse(localStorage.getItem('cart') || '[]');
-  }
-
-  // ======= Actualizar Cantidad =======
+  // Cambiar cantidad de un item
   updateCantidad(id: string, cantidad: number): Observable<any> {
     const isLogged = !!localStorage.getItem('token');
+
     if (!isLogged) {
-      let cart: CartItem[] = JSON.parse(localStorage.getItem('cart') || '[]');
+      let cart = this.getLocalCart();
       const item = cart.find(i => i.id === id);
       if (item) {
         item.cantidad = cantidad;
-        localStorage.setItem('cart', JSON.stringify(cart));
-        this.setCart(cart);
+        this.saveLocalCart(cart);
       }
       return of(cart);
     }
-    // 🔐 Logueados: PUT dinámico
-    return new Observable(observer => {
-      this.http.put<CartItem[]>(`${this.url}/${id}`, { cantidad }).subscribe(items => {
-        this.setCart(items);
-        observer.next(items);
-        observer.complete();
-      });
-    });
+
+    return this.http.put<CartItem[]>(`${this.url}/${id}`, { cantidad }).pipe(
+      tap(items => this.setCart(items))
+    );
   }
 
-  getUser(): string {
+  // Vaciar todo el carrito
+  clearCart(): Observable<any> {
+    const isLogged = !!localStorage.getItem('token');
+    
+    if (!isLogged) {
+      localStorage.removeItem('cart');
+      this.setCart([]);
+      return of({ mensaje: 'Carrito local limpiado' });
+    }
+
+    return this.http.delete<CartItem[]>(this.url).pipe(
+      tap(() => this.setCart([]))
+    );
+  }
+
+  // ======= Sincronización Post-Auth =======
+  
+  syncCart(localCart: CartItem[]): Observable<CartItem[]> {
+    return this.http.post<CartItem[]>(`${this.url}/sync`, { items: localCart }).pipe(
+      tap(items => {
+        this.setCart(items);
+        localStorage.removeItem('cart'); // Limpiar local tras subir a DB
+      })
+    );
+  }
+
+  // Helper para obtener token (usado en interceptores o componentes)
+  getUserToken(): string {
     return localStorage.getItem('token') || '';
   }
 }

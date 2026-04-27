@@ -2,57 +2,72 @@
   <header class="admin-prod-header">
     <div class="header-info">
       <h2 class="admin-prod-title">📱 Gestión de Inventario</h2>
-      <p class="admin-prod-subtitle">Administra el catálogo de dispositivos y su disponibilidad.</p>
+      <p class="admin-prod-subtitle">Control de catálogo bajo estética Dark Tech.</p>
     </div>
     <button class="btn-new-prod" [routerLink]="['/admin/crear']">
-      ➕ Nuevo Producto
+      ➕ Nuevo Dispositivo
     </button>
   </header>
 
-  <div class="admin-prod-card">
-    <div class="table-responsive">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Producto</th>
-            <th>Marca</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let p of productos">
-            <td class="col-img">
-              <img [src]="p.imagen || 'https://via.placeholder.com/50'" [alt]="p.modelo">
-            </td>
-            <td class="col-model">
-              <span class="model-name">{{ p.modelo }}</span>
-              <small class="prod-id">#{{ p.id.slice(-6) }}</small>
-            </td>
-            <td>{{ p.marca }}</td>
-            <td class="col-price">S/ {{ p.precio | number:'1.2-2' }}</td>
-            <td class="col-stock">
-              <span class="stock-badge" [class.low]="p.stock < 5">
-                {{ p.stock }} un.
-              </span>
-            </td>
-            <td class="col-actions">
-              <button class="btn-edit" [routerLink]="['/admin/editar', p.id]" title="Editar">
-                ✏️
-              </button>
-              <button class="btn-delete" (click)="eliminar(p.id!)" title="Eliminar">
-                ❌
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div *ngIf="loading$ | async" class="loading-state">
+    <div class="glow-spinner"></div>
+    <p>Sincronizando base de datos...</p>
+  </div>
+
+  <div class="admin-prod-list" *ngIf="productos$ | async as lista">
+    
+    <div class="list-header" *ngIf="lista.length > 0">
+      <span>Producto</span>
+      <span class="text-center">Marca</span>
+      <span class="text-center">Precio</span>
+      <span class="text-center">Stock</span>
+      <span class="text-right">Acciones</span>
     </div>
 
-    <div *ngIf="productos.length === 0" class="empty-state">
-      <p>No hay productos en el catálogo.</p>
+    <div *ngIf="lista.length > 0; else emptyState">
+      <article *ngFor="let p of lista" class="prod-card-row">
+        
+        <div class="card-main-info">
+          <div class="img-wrapper">
+            <img [src]="p.imagen || 'assets/placeholder.png'" [alt]="p.modelo">
+          </div>
+          <div class="details">
+            <h3 class="model-name">{{ p.modelo }}</h3>
+            <span class="prod-id">ID: {{ p.id.slice(-6).toUpperCase() }}</span>
+          </div>
+        </div>
+
+        <div class="card-tag-section">
+          <span class="brand-badge">{{ p.marca }}</span>
+        </div>
+
+        <div class="card-price-section">
+          <span class="price-val">S/ {{ p.precio | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="card-stock-section">
+          <span class="stock-badge" [style.color]="p.stock < 5 ? 'var(--error)' : 'var(--success)'">
+            {{ p.stock }} <small>un.</small>
+          </span>
+        </div>
+
+        <div class="card-actions-section">
+          <button class="btn-icon edit" [routerLink]="['/admin/editar', p.id]" title="Editar">
+            ✏️
+          </button>
+          <button class="btn-icon delete" (click)="eliminar(p.id!)" title="Eliminar">
+            🗑️
+          </button>
+        </div>
+
+      </article>
     </div>
+
+    <ng-template #emptyState>
+      <div class="empty-card" *ngIf="!(loading$ | async)">
+        <p>No se encontraron dispositivos en el sistema.</p>
+        <button class="btn-outline" [routerLink]="['/admin/crear']">Registrar primero</button>
+      </div>
+    </ng-template>
   </div>
 </section>
