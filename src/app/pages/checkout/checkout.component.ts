@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from "@angular/router";
 import { OrdenesService } from '../../services/ordenes.service';
 import { AuthService } from '../../services/auth.service';
-import { map } from 'rxjs';
+import { map, take } from 'rxjs'; // 👈 Añadimos 'take' para obtener el valor actual una sola vez
 
 @Component({
   selector: 'app-checkout',
@@ -14,16 +14,13 @@ import { map } from 'rxjs';
   styleUrl: './checkout.component.css'
 })
 export class CheckoutComponent implements OnInit {
-  // 1. Inyectamos los servicios (más moderno)
   private carritoService = inject(CarritoService);
   private ordenesService = inject(OrdenesService);
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  // 2. Observables directos para el HTML
   cart$ = this.carritoService.cart$;
   
-  // Calculamos el total reactivamente
   total$ = this.cart$.pipe(
     map(items => items.reduce((sum, item) => sum + item.precio * item.cantidad, 0))
   );
@@ -32,7 +29,6 @@ export class CheckoutComponent implements OnInit {
   loading = false; 
 
   ngOnInit() {
-    // Solo disparamos la carga inicial si es necesario
     this.loading = true;
     this.carritoService.getCart().subscribe({
       next: () => this.loading = false,
@@ -41,42 +37,69 @@ export class CheckoutComponent implements OnInit {
   }
 
   confirmarCompra() {
-    // Usamos el método del authService que ya tienes
+    // 1. Verificación básica de sesión
     const token = !!localStorage.getItem('token'); 
-
     if (!token) {
       this.router.navigate(['/login']);
       return;
     }
 
     if (this.loading) return; 
-    this.loading = true;
 
-    // Crear la orden directamente (el servidor ya sabe qué hay en el carrito por el token)
-    this.ordenesService.createOrder().subscribe({
-      next: (orden) => {
-        this.confirmado = true;
-        // Limpiamos el carrito (esto actualizará el Navbar automáticamente)
-        this.carritoService.clearCart().subscribe(() => {
-          this.loading = false;
-          this.router.navigate(['/orden', orden.id]);
-        });
-      },
-      error: (err) => {
-        this.loading = false;
-        this.manejarError(err);
+    // 2. Obtenemos los datos actuales del carrito para enviarlos al backend
+    // Usamos take(1) para que el observable se complete tras darnos el valor actual
+    this.cart$.pipe(take(1)).subscribe(items => {
+      
+      if (items.length === 0) {
+        alert('El carrito está vacío');
+        return;
       }
+
+      this.loading = true;
+
+      // 3. Calculamos el total manualmente para el envío
+      const total = items.reduce((sum, i) => sum + i.precio * i.cantidad, 0);
+
+      // 4. Armamos el paquete de datos (Payload)
+      // Ajustamos los nombres de los campos para que coincidan con tu backend (nombre/modelo)
+      const datosOrden = {
+        items: items.map(i => ({
+          id: i.id,
+          nombre: i.modelo || i.modelo, // Enviamos el nombre/modelo según tu interfaz
+          precio: i.precio,
+          cantidad: i.cantidad,
+          imagen: i.imagen
+        })),
+        total: total
+      };
+
+      // 5. Enviamos la orden con los datos necesarios
+      this.ordenesService.createOrder(datosOrden).subscribe({
+        next: (orden) => {
+          this.confirmado = true;
+          this.carritoService.clearCart().subscribe(() => {
+            this.loading = false;
+            // Navegamos al detalle de la orden recién creada
+            this.router.navigate(['/orden', orden.id]);
+          });
+        },
+        error: (err) => {
+          this.loading = false;
+          this.manejarError(err);
+        }
+      });
     });
   }
 
   private manejarError(err: any) {
+    console.error('Detalle del error:', err);
     if (err.status === 400) {
-      alert(err.error.msg || 'Stock insuficiente');
+      alert(err.error.msg || 'Error en los datos del pedido');
     } else if (err.status === 401) {
       alert('Sesión expirada');
       this.router.navigate(['/login']);
     } else {
-      alert('Error al procesar el pedido');
+      alert('Error al procesar el pedido: ' + (err.error?.msg || 'Servidor no disponible'));
     }
   }
 }

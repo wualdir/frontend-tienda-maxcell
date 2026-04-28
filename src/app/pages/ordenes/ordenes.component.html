@@ -4,18 +4,22 @@
     <p class="history-subtitle">Consulta el estado y detalle de tus compras anteriores.</p>
   </header>
 
-  <div *ngIf="ordenes.length === 0" class="history-empty">
+  <div *ngIf="loading" class="history-loading">
+    <p>Cargando tus pedidos...</p>
+  </div>
+
+  <div *ngIf="!loading && ordenes.length === 0" class="history-empty">
     <div class="history-empty-icon">📂</div>
     <p>Aún no has realizado ninguna compra.</p>
     <a routerLink="/tienda" class="history-btn-shop">Ir a la tienda</a>
   </div>
 
-  <div class="history-list" *ngIf="ordenes.length > 0">
+  <div class="history-list" *ngIf="!loading && ordenes.length > 0">
     <article *ngFor="let orden of ordenes" class="history-card">
       <div class="history-card-main">
         <div class="history-info">
-          <span class="history-id">Pedido #{{ orden.id }}</span>
-          <span class="history-date">{{ orden.createdAt | date:'mediumDate' }}</span>
+          <span class="history-id">Pedido #{{ orden.id.slice(-6).toUpperCase() }}</span> 
+          <span class="history-date">{{ orden.createdAt | date:'dd/MM/yyyy' }}</span>
         </div>
         
         <div class="history-stats">
@@ -23,7 +27,10 @@
             <span class="label">Total</span>
             <span class="value">{{ orden.total | currency:'S/. ' }}</span>
           </div>
-          <span class="history-status-badge">Completado</span>
+          
+          <span class="history-status-badge" [ngClass]="orden.estado.toLowerCase()">
+            {{ orden.estado }}
+          </span>
         </div>
       </div>
 

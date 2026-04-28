@@ -4,6 +4,13 @@ import { Observable } from 'rxjs';
 import { Order } from '../models/ordenes.model';
 import { environment } from '../../environments/environment'; // 👈 Importamos environment
 
+
+// Definimos una interfaz rápida para el envío
+interface OrderPayload {
+  items: any[];
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,11 +22,11 @@ export class OrdenesService {
   constructor(private http: HttpClient) {}
 
   // 🧾 Crear orden
-  // Es buena práctica pasarle el carrito o los datos de la orden
-  // aunque el backend lo saque de la sesión/token.
-  createOrder(orderData?: any): Observable<any> {
-    return this.http.post(this.url, orderData || {});
-  }
+ // En ordenes.service.ts
+createOrder(orderData: OrderPayload): Observable<any> {
+  // Ahora orderData ya no será undefined, llevará el {items, total}
+  return this.http.post(this.url, orderData);
+}
 
   // 📦 mis órdenes
   getOrders(): Observable<Order[]> {
