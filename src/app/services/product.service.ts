@@ -35,22 +35,18 @@ export class ProductService {
   }
 
   // ======= Filtros y Búsqueda =======
-  getProductosFiltrados(filtros: any) {
-    this.loadingSubject.next(true);
-
-    // Limpiamos los parámetros nulos/vacíos
-    const params = Object.keys(filtros).reduce((acc: any, key) => {
-      const value = filtros[key];
-      if (value !== null && value !== undefined && value !== '') {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-
-    this.http.get<Producto[]>(this.url, { params }).pipe(
-      finalize(() => this.loadingSubject.next(false))
-    ).subscribe(data => this.productosSubject.next(data));
+ getProductosFiltrados(filtros: any) {
+  this.loadingSubject.next(true);
+  const params = { ...filtros };
+  // Si nadie ha mandado el filtro de disponibilidad, 
+  // por defecto le pedimos a la API solo lo que tiene stock
+  if (!params.disponible) {
+    params.disponible = 'true';
   }
+  this.http.get<Producto[]>(this.url, { params }).pipe(
+    finalize(() => this.loadingSubject.next(false))
+  ).subscribe(data => this.productosSubject.next(data));
+}
 
   // ======= Operaciones Atómicas (Devuelven Observable) =======
   getById(id: string): Observable<Producto> {

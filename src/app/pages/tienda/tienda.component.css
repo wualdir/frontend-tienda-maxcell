@@ -64,11 +64,17 @@
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
+
 .btn-text {
   background: none;
   border: none;
   color: var(--accent-blue);
   font-weight: 600;
+  margin-right: 3rem;
+  cursor: pointer;
+}
+.btn-cerrar{
+  cursor: pointer;
 }
 
 /* Formulario */
@@ -142,6 +148,7 @@ select, input {
   border-radius: 14px;
   font-weight: 700;
   box-shadow: 0 8px 20px rgba(14, 165, 227, 0.3);
+  cursor: pointer;
 }
 
 /* Desktop Adjustment */

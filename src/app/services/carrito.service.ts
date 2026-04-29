@@ -95,6 +95,8 @@ export class CarritoService {
     );
   }
 
+  
+
   // Cambiar cantidad de un item
   updateCantidad(id: string, cantidad: number): Observable<any> {
     const isLogged = !!localStorage.getItem('token');

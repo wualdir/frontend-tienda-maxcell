@@ -10,7 +10,7 @@
     <div class="filtros-header">
       <h3>Filtros</h3>
       <div class="header-btns">
-        <button class="btn-text" (click)="limpiarFiltros()">Limpiar</button>
+        <button class="btn-text" (click)="limpiarFiltros()">Limpiar campos </button>
         <button class="btn-cerrar" (click)="toggleFiltros()">✕</button>
       </div>
     </div>
@@ -38,14 +38,14 @@
           <select [(ngModel)]="ram">
             <option [ngValue]="null">RAM</option>
             <option [ngValue]="4">4GB</option>
+            <option [ngValue]="6">6GB</option>
             <option [ngValue]="8">8GB</option>
-            <option [ngValue]="12">12GB</option>
           </select>
           <select [(ngModel)]="almacenamiento">
             <option [ngValue]="null">Disco</option>
+            <option [ngValue]="64">64GB</option>
             <option [ngValue]="128">128GB</option>
             <option [ngValue]="256">256GB</option>
-            <option [ngValue]="512">512GB</option>
           </select>
         </div>
       </section>

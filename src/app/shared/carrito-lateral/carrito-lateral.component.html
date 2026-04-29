@@ -1,50 +1,72 @@
 <div class="cart-overlay" [class.active]="isOpen" (click)="close()"></div>
 
 <aside class="cart-drawer" [class.open]="isOpen">
-  
   <div class="cart-header">
-    <h2><span class="icon">🛒</span> Carrito</h2>
-    <button class="btn-close" (click)="close()">✕</button>
+    <div class="header-title">
+      <span class="neon-icon">🛒</span>
+      <h2>Carrito</h2>
+    </div>
+    <div class="header-actions">
+      <button *ngIf="cart.length > 2" class="btn-clear-all" (click)="clear()">
+        <span class="icon">🗑️</span> Vaciar
+      </button>
+      <button class="btn-close" (click)="close()">✕</button>
+    </div>
   </div>
 
   <div class="cart-content">
     <div *ngIf="cart.length === 0" class="empty-cart">
-      <p>Tu carrito está vacío</p>
-      <button class="btn-back" (click)="close()">Explorar tienda</button>
+      <div class="empty-visual">
+        <span class="pulse-ring"></span>
+        <span class="icon">📦</span>
+      </div>
+      <p class="empty-text">Tu arsenal tecnológico está vacío</p>
+      <button class="btn-explore" (click)="close()">Explorar Tienda</button>
     </div>
 
     <div *ngFor="let item of cart" class="cart-item">
-      <div class="item-img">
-        <img [src]="item.imagen || 'https://via.placeholder.com/80'" [alt]="item.modelo">
+      <div class="item-img-container">
+        <img [src]="item.imagen || 'assets/placeholder-tech.png'" [alt]="item.modelo">
       </div>
       
-      <div class="item-info">
-        <p class="item-name">{{ item.modelo }}</p>
-        <p class="item-price">{{ item.precio | currency:'S/. ' }}</p>
-        
-        <div class="item-actions">
-          <input 
-            type="number" 
-            [(ngModel)]="item.cantidad" 
-            (change)="updateCantidad(item)"
-            class="qty-input">
-          
-          <button class="btn-remove" (click)="remove(item.id)">
-            Eliminar
-          </button>
+      <div class="item-details">
+        <div class="item-main-info">
+          <p class="item-name">{{ item.modelo }}</p>
+          <button class="btn-remove-simple" (click)="remove(item.id)" title="Eliminar">✕</button>
         </div>
-        <p class="subtotal">Subtotal: {{ item.precio * item.cantidad | currency:'S/. ' }}</p>
+        
+        <p class="item-price-unit">{{ item.precio | currency:'S/. ' }}</p>
+        
+        <div class="item-controls">
+          <div class="qty-wrapper">
+            <label>Cant.</label>
+            <input 
+              type="number" 
+              [(ngModel)]="item.cantidad" 
+              (change)="updateCantidad(item)"
+              class="qty-input-neon">
+          </div>
+          <div class="item-subtotal">
+            <span>Subtotal:</span>
+            <p>{{ item.precio * item.cantidad | currency:'S/. ' }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="cart-footer" *ngIf="cart.length > 0">
-    <div class="total-row">
-      <span>Total:</span>
-      <span class="total-amount">{{ getTotal() | currency:'S/. ' }}</span>
+    <div class="total-container">
+      <div class="total-label">
+        <span class="label">Total Estimado</span>
+        <span class="tax-info">Incluye IGV</span>
+      </div>
+      <div class="total-price">{{ getTotal() | currency:'S/. ' }}</div>
     </div>
-    <button class="btn-checkout" (click)="checkout()">
-      💳 Finalizar Compra
+    
+    <button class="btn-checkout-neon" (click)="checkout()">
+      <span class="btn-text">FINALIZAR COMPRA</span>
+      <span class="btn-glitch-effect"></span>
     </button>
   </div>
 </aside>
