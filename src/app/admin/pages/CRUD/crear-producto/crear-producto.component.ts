@@ -15,7 +15,7 @@ export class CrearProductoComponent {
   private service = inject(AdminProductoService);
   private router = inject(Router);
 
-  // Modelo de datos limpio
+  // Modelo de datos sincronizado con el Backend
   producto = {
     marca: '',
     modelo: '',
@@ -32,49 +32,70 @@ export class CrearProductoComponent {
     }
   };
 
-  imagen: File | null = null;
-  imagePreview: string | null = null;
+  // Gestión de archivos
+  imagenes: File[] = [];
+  imagePreviews: string[] = [];
   loading = false;
 
-  onFile(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.imagen = file;
+
+  // Maneja la selección de múltiples imágenes
+  onFilesSelected(event: any) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const newFiles = Array.from(files) as File[];
+    
+    // Acumulamos archivos para el envío
+    this.imagenes = [...this.imagenes, ...newFiles];
+
+    // Generamos las previsualizaciones
+    newFiles.forEach(file => {
       const reader = new FileReader();
-      reader.onload = () => this.imagePreview = reader.result as string;
+      reader.onload = () => {
+        this.imagePreviews.push(reader.result as string);
+      };
       reader.readAsDataURL(file);
-    }
+    });
+
+    // Limpiamos el input para permitir re-selección
+    event.target.value = '';
+  }
+
+  // Quitar imagen de la lista antes de subir
+  removeImage(index: number) {
+    this.imagenes.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
   }
 
   guardar() {
-    if (!this.imagen) return alert('La imagen del dispositivo es obligatoria');
+    if (this.imagenes.length === 0) return alert('Debes subir al menos una imagen');
     
     this.loading = true;
     const formData = new FormData();
 
-    // Llenado dinámico para no repetir .append 20 veces
+    // Campos base
     Object.entries(this.producto).forEach(([key, value]) => {
-      if (key !== 'specs') {
-        formData.append(key, value.toString());
-      }
+      if (key !== 'specs') formData.append(key, value.toString());
     });
 
-    // Añadir specs
+    // Especificaciones técnicas
     Object.entries(this.producto.specs).forEach(([key, value]) => {
       formData.append(key, value);
     });
 
-    formData.append('imagen', this.imagen);
+    // Adjuntar array de imágenes
+    this.imagenes.forEach(file => {
+      formData.append('imagenes', file);
+    });
 
     this.service.createProduct(formData).subscribe({
       next: () => {
-        // No necesitamos refrescar nada aquí, el SERVICE ya lo hizo por nosotros
         this.router.navigate(['/admin/productos']);
       },
       error: (err) => {
-        console.error('Error al crear:', err);
+        console.error('Error:', err);
         this.loading = false;
-        alert('Error al guardar el producto. Revisa la consola.');
+        alert('Error al guardar el producto');
       }
     });
   }

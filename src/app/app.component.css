@@ -2,8 +2,22 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  /* Eliminamos cualquier posible overflow que bloquee el sticky */
+  overflow: visible; 
+}
+
+/* IMPORTANTE: Si el componente app-navbar tiene un host flex, 
+   necesitamos asegurar que se comporte como bloque */
+app-navbar {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 main {
   flex: 1;
+  /* Aseguramos que el contenido principal no tape al navbar */
+  position: relative;
+  z-index: 1;
 }

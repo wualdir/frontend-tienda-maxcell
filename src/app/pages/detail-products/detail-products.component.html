@@ -1,74 +1,109 @@
 <div class="container">
-  <a routerLink="/tienda" class="btn-back">← Volver a la lista</a>
+  <a routerLink="/tienda" class="btn-back">← Volver al catálogo</a>
 
-  <div class="product-card" *ngIf="producto">
-    <div class="product-image">
-      <img [src]="producto.imagen || 'https://via.placeholder.com/400'" [alt]="producto.modelo">
+  <div class="product-grid" *ngIf="producto">
+    
+    <!-- SECCIÓN MULTIMEDIA -->
+    <div class="media-container">
+      <div class="thumbnails-track">
+        <div *ngFor="let img of producto.imagenes" 
+             class="thumb-box" 
+             [class.active]="img === imagenPrincipal && !mostrarVideo"
+             (click)="cambiarImagen(img)">
+        <!-- Cambia esto en tu visor principal -->
+<img [src]="img || 'https://via.placeholder.com/400'" 
+     [alt]="producto.modelo" 
+     class="main-img-neon">
+        </div>
+        
+        <!-- Miniatura de Video si existe -->
+        <div *ngIf="producto.videoUrl" class="thumb-box video-trigger" 
+             [class.active]="mostrarVideo"
+             (click)="activarVideo()">
+          <span class="play-icon">▶</span>
+          <img [src]="producto.imagenes[0]" alt="Preview video">
+        </div>
+      </div>
+
+      <div class="main-viewer">
+        <ng-container *ngIf="!mostrarVideo; else videoTpl">
+          <img [src]="imagenPrincipal" class="main-img-neon" [alt]="producto.modelo">
+        </ng-container>
+        
+        <ng-template #videoTpl>
+          <video autoplay loop muted playsinline class="main-video-neon">
+            <source [src]="producto.videoUrl" type="video/mp4">
+          </video>
+        </ng-template>
+      </div>
     </div>
 
-    <div class="product-info">
-      <span class="brand-tag">{{ producto.marca }}</span>
-      <h1 class="model-title">{{ producto.modelo }}</h1>
+    <!-- SECCIÓN INFO -->
+    <div class="info-container">
+      <header class="info-header">
+        <span class="brand-label">{{ producto.marca }}</span>
+        <h1 class="product-title">{{ producto.modelo }}</h1>
+      </header>
 
-    <div class="price-section">
-  <h2 class="current-price">{{ producto.precio | currency:'S/. ' }}</h2>
-  
-  <div class="oferta-wrapper" *ngIf="producto.precioOriginal && (producto.precioOriginal > producto.precio)">
-    
-    <span class="precio-viejo">
-      {{ producto.precioOriginal | currency:'S/. ' }}
-    </span>
-
-    <span class="badge-oferta">OFERTA</span>
-    
-  </div>
-</div>
-
-      <div class="stock-status">
-        <p [ngClass]="producto.stock > 0 ? 'in-stock' : 'out-of-stock'">
-          {{ producto.stock > 0 ? '¡Últimas ' + producto.stock + ' unidades disponibles!' : '❌ Sin stock' }}
+      <div class="price-box">
+        <div class="price-row">
+          <span class="current-price">{{ producto.precio | currency:'S/. ' }}</span>
+          <span *ngIf="producto.enOferta" class="badge-promo">OFERTA</span>
+        </div>
+        <p *ngIf="producto.enOferta" class="old-price">
+          {{ producto.precioOriginal | currency:'S/. ' }}
         </p>
-        <div class="stock-bar" *ngIf="producto.stock > 0">
-          <div class="stock-fill" [style.width.%]="producto.stock > 10 ? 100 : producto.stock * 10"></div>
+      </div>
+
+      <div class="availability">
+        <div class="stock-info">
+          <span [class]="producto.stock > 0 ? 'status-ok' : 'status-err'">
+            {{ producto.stock > 0 ? 'Disponibilidad inmediata' : 'Sin stock disponible' }}
+          </span>
+          <span class="stock-count" *ngIf="producto.stock > 0">
+            ({{ producto.stock }} unidades)
+          </span>
+        </div>
+        <div class="progress-container" *ngIf="producto.stock > 0">
+          <div class="progress-fill" [style.width.%]="producto.stock > 5 ? 100 : (producto.stock * 20)"></div>
         </div>
       </div>
 
-      <button routerLink="/carrito-lateral" class="btn-add" (click)="addToCart(producto)" [disabled]="producto.stock === 0">
-        <span class="icon-cart">🛒</span> Agregar al Carrito
+      <button class="btn-buy-tech" (click)="addToCart(producto)" [disabled]="producto.stock === 0">
+        <span class="btn-icon">🛒</span>
+        {{ producto.stock > 0 ? 'AÑADIR AL ARSENAL' : 'PRODUCTO AGOTADO' }}
       </button>
 
-      <div class="trust-badges">
-        <span>💳 Pagos seguros</span>
-        <span>🚚 Envío nacional</span>
+      <div class="benefits">
+        <div class="benefit-item">🛡️ 12 meses de garantía</div>
+        <div class="benefit-item">🚀 Envío express en Bagua</div>
       </div>
-
-      <hr>
 
       <div class="specs-grid">
-        <div class="spec-item">
-          <span class="spec-icon">📸</span>
-          <p><strong>Cámara</strong></p>
-          <span>{{ producto.especificaciones.camaraPrincipal }}</span>
+        <div class="spec-card">
+          <span class="icon">📸</span>
+          <label>Cámara</label>
+          <p>{{ producto.especificaciones.camaraPrincipal }}</p>
         </div>
-        <div class="spec-item">
-          <span class="spec-icon">📱</span>
-          <p><strong>Pantalla</strong></p>
-          <span>{{ producto.especificaciones.pantalla }}</span>
+        <div class="spec-card">
+          <span class="icon">📱</span>
+          <label>Pantalla</label>
+          <p>{{ producto.especificaciones.pantalla }}</p>
         </div>
-        <div class="spec-item">
-          <span class="spec-icon">🔋</span>
-          <p><strong>Batería</strong></p>
-          <span>{{ producto.especificaciones.bateria }}</span>
+        <div class="spec-card">
+          <span class="icon">💾</span>
+          <label>RAM / ROM</label>
+          <p>{{ producto.especificaciones.ram }}GB / {{ producto.especificaciones.almacenamiento }}GB</p>
         </div>
-        <div class="spec-item">
-          <span class="spec-icon">💾</span>
-          <p><strong>Memoria</strong></p>
-          <span>{{ producto.especificaciones.ram }} / {{ producto.especificaciones.almacenamiento }}</span>
+        <div class="spec-card">
+          <span class="icon">🔋</span>
+          <label>Batería</label>
+          <p>{{ producto.especificaciones.bateria }}</p>
         </div>
       </div>
 
-      <div class="description">
-        <h3>Descripción</h3>
+      <div class="product-desc">
+        <h3>Descripción técnica</h3>
         <p>{{ producto.descripcion }}</p>
       </div>
     </div>

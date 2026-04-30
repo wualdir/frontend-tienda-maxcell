@@ -1,7 +1,7 @@
 <section class="form-container">
   <header class="form-header">
     <h2 class="form-title">➕ Registrar Nuevo Dispositivo</h2>
-    <p class="form-subtitle">Completa la ficha técnica para el catálogo.</p>
+    <p class="form-subtitle">Configuración de catálogo y galería multimedia.</p>
   </header>
 
   <form (ngSubmit)="guardar()" class="dark-form">
@@ -12,75 +12,88 @@
         
         <div class="input-group">
           <label>Modelo del Dispositivo</label>
-          <input type="text" [(ngModel)]="producto.modelo" name="modelo" placeholder="Ej: iPhone 15 Pro" required>
+          <input type="text" [(ngModel)]="producto.modelo" name="modelo" placeholder="Ej: Samsung S24 Ultra" required>
         </div>
 
         <div class="input-row">
           <div class="input-group">
             <label>Marca</label>
-            <input type="text" [(ngModel)]="producto.marca" name="marca" placeholder="Apple">
+            <input type="text" [(ngModel)]="producto.marca" name="marca" placeholder="Samsung">
           </div>
           <div class="input-group">
-            <label>Stock Inicial</label>
+            <label>Stock</label>
             <input type="number" [(ngModel)]="producto.stock" name="stock">
           </div>
         </div>
 
         <div class="input-row">
           <div class="input-group">
-            <label>Precio Venta (S/)</label>
+            <label>Precio Oferta (S/)</label>
             <input type="number" [(ngModel)]="producto.precio" name="precio" class="highlight">
           </div>
           <div class="input-group">
-            <label>Precio Original</label>
+            <label>Precio Regular</label>
             <input type="number" [(ngModel)]="producto.precioOriginal" name="precioOriginal">
           </div>
         </div>
 
         <div class="input-group">
-          <label>Descripción Corta</label>
-          <textarea [(ngModel)]="producto.descripcion" name="descripcion" rows="3"></textarea>
+          <label>Descripción</label>
+          <textarea [(ngModel)]="producto.descripcion" name="descripcion" rows="4"></textarea>
         </div>
       </div>
 
       <div class="form-section">
-        <h3 class="section-title">🛠️ Especificaciones & Media</h3>
+        <h3 class="section-title">🛠️ Multimedia & Especificaciones</h3>
         
-        <div class="image-upload" (click)="fileInput.click()">
-          <input type="file" #fileInput (change)="onFile($event)" hidden>
-          <div *ngIf="!imagePreview" class="upload-placeholder">
-            <span class="icon">📸</span>
-            <p>Click para subir imagen</p>
+        <!-- Añadimos #fileInput como referencia de Angular -->
+<input type="file" #fileInput id="fileInput" (change)="onFilesSelected($event)" hidden multiple accept="image/*">
+
+<div class="upload-box" (click)="fileInput.click()"> 
+  <!-- Ahora llamamos directamente a la referencia del HTML -->
+  <div class="upload-design">
+    <span class="icon">🖼️</span>
+    <p>Añadir imágenes a la galería</p>
+  </div>
+</div>
+
+        <div class="preview-gallery" *ngIf="imagePreviews.length > 0">
+          <div *ngFor="let preview of imagePreviews; let i = index" class="preview-card">
+            <img [src]="preview">
+            <button type="button" class="btn-del" (click)="removeImage(i)">×</button>
           </div>
-          <img *ngIf="imagePreview" [src]="imagePreview" class="preview-img">
         </div>
 
         <div class="specs-grid">
           <div class="input-group">
             <label>Pantalla</label>
-            <input type="text" [(ngModel)]="producto.specs.espePantalla" name="pantalla" placeholder="6.1' OLED">
+            <input type="text" [(ngModel)]="producto.specs.espePantalla" name="pantalla" placeholder="6.8' Dynamic AMOLED">
           </div>
           <div class="input-group">
-            <label>RAM</label>
-            <input type="text" [(ngModel)]="producto.specs.espeRam" name="ram" placeholder="8GB">
+            <label>RAM (GB)</label>
+            <input type="number" [(ngModel)]="producto.specs.espeRam" name="ram">
           </div>
           <div class="input-group">
-            <label>Almacenamiento</label>
-            <input type="text" [(ngModel)]="producto.specs.espeAlmacenamiento" name="almacen" placeholder="128GB">
+            <label>Almacenamiento (GB)</label>
+            <input type="number" [(ngModel)]="producto.specs.espeAlmacenamiento" name="almacen">
           </div>
           <div class="input-group">
             <label>Batería</label>
-            <input type="text" [(ngModel)]="producto.specs.espeBateria" name="bateria" placeholder="4000 mAh">
+            <input type="text" [(ngModel)]="producto.specs.espeBateria" name="bateria" placeholder="5000 mAh">
+          </div>
+          <div class="input-group full">
+            <label>Cámara Principal</label>
+            <input type="text" [(ngModel)]="producto.specs.espeCamPrincipal" name="camara" placeholder="200MP + 12MP + 10MP">
           </div>
         </div>
       </div>
 
     </div>
 
-    <div class="form-actions">
-      <button type="button" class="btn-cancel" routerLink="/admin/productos">Cancelar</button>
-      <button type="submit" class="btn-save" [disabled]="loading">
-        {{ loading ? 'Guardando...' : '🚀 Publicar Producto' }}
+    <div class="form-footer">
+      <button type="button" class="btn-back" routerLink="/admin/productos">Volver</button>
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        {{ loading ? 'Procesando...' : '🚀 Crear Producto' }}
       </button>
     </div>
   </form>

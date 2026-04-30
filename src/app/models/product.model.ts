@@ -3,19 +3,24 @@ export interface Producto {
     marca: string;
     modelo: string;
     precio: number;
-    precioOriginal?: number; // Para mostrar el precio tachado y descuentos
+    precioOriginal?: number;
     stock: number;
-    imagen: string;
+    
+    // 🔥 Coincide con el Backend
+    imagenes: string[]; 
+    videoUrl?: string; 
+    
     descripcion: string;
-    // Atributos técnicos para renderizar los iconos de specs
     especificaciones: {
-        camaraPrincipal: string; // ej: "108MP"
-        pantalla: string;        // ej: "AMOLED 120Hz"
-        bateria: string;         // ej: "5000mAh"
-        ram: number;             // ej: "8GB"
-        almacenamiento: number;  // ej: "256GB"
+        camaraPrincipal: string;
+        pantalla: string;
+        bateria: string;
+        ram: number;           // Para mostrarlo usas: {{ producto.especificaciones.ram }}GB
+        almacenamiento: number; // Para mostrarlo usas: {{ producto.especificaciones.almacenamiento }}GB
     };
     disponible: boolean;
+    
+    // Virtuals que vienen del Backend
+    enOferta?: boolean;
+    hayStock?: boolean;
 }
-
-

@@ -17,11 +17,11 @@
       <span class="icon">🛒</span>
     </button>
 
-    <img
-      class="card-img"
-      [src]="prod.imagen || 'https://via.placeholder.com/200x250'"
-      [alt]="prod.modelo"
-    >
+   <img
+  class="card-img"
+  [src]="(prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/200x250'"
+  [alt]="prod.modelo"
+>
 
     <h3>{{ prod.modelo }}</h3>
     <p>{{ prod.marca }}</p>

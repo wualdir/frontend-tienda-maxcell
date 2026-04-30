@@ -29,7 +29,11 @@
         
         <div class="card-main-info">
           <div class="img-wrapper">
-            <img [src]="p.imagen || 'assets/placeholder.png'" [alt]="p.modelo">
+           <img
+  class="card-img"
+  [src]="(p.imagenes && p.imagenes.length > 0) ? p.imagenes[0] : 'https://via.placeholder.com/200x250'"
+  [alt]="p.modelo"
+>
           </div>
           <div class="details">
             <h3 class="model-name">{{ p.modelo }}</h3>

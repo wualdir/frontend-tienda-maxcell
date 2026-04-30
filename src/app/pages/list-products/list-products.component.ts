@@ -34,7 +34,7 @@ export class ListProductsComponent {
         id: producto.id,
         modelo: producto.modelo,
         precio: producto.precio,
-        imagen: producto.imagen,
+        imagen: producto.imagenes[0],
         cantidad: 1
       };
 

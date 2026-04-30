@@ -28,6 +28,7 @@ private carritoService = inject(CarritoService);
   isLoggedIn$ = this.authService. isLoggedIn$;
   user$ = this.authService.user$;
   cartCount$ = this.carritoService.cartCount$;
+  isMenuOpen = false;
  
 
 constructor(
@@ -92,9 +93,16 @@ cerrarResultados() {
 
 toggleMenu() {
   this.isOpen = !this.isOpen;
+  // Opcional: Bloquear el scroll del cuerpo cuando el menú está abierto
+  if (this.isOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'auto';
+  }
 }
 closeMenu() {
   this.isOpen = false;
+  document.body.style.overflow = 'auto';
 }
 
 //para el carrito 

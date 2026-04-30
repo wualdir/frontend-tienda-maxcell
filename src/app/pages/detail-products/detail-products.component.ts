@@ -21,43 +21,55 @@ export class DetailProductsComponent {
     private productService:ProductService,
     private route:ActivatedRoute,
     private carritoService:CarritoService){}
+
+imagenPrincipal: string = '';
+mostrarVideo: boolean = false;
+
+cambiarImagen(url: string) {
+  this.imagenPrincipal = url;
+  this.mostrarVideo = false;
+}
+
+activarVideo() {
+  this.mostrarVideo = true;
+}
+
   
-  ngOnInit():void{
-   this.route.paramMap.subscribe(params => {
-   const id = params.get('id')!;
+// detalle-producto.component.ts
+ngOnInit(): void {
+  this.route.paramMap.subscribe(params => {
+    const id = params.get('id')!;
     this.productService.getById(id).subscribe(data => {
-    this.producto = data;
+      this.producto = data;
+      
+      // 🔥 LA CLAVE: Asignar la primera foto del array a la vista principal
+      if (this.producto.imagenes && this.producto.imagenes.length > 0) {
+        this.imagenPrincipal = this.producto.imagenes[0];
+      }
+    });
   });
-});
+}
 
-  }
-
-addToCart(product:Producto ) {
-
-    // 🔥 VALIDACIÓN UX
-  if (product.stock === 0) {
-    alert('❌ Producto sin stock');
-    return;
-  }
+// Actualizamos el addToCart para usar el nuevo array de imágenes
+addToCart(product: Producto) {
+  if (product.stock === 0) return;
 
   const item: CartItemUI = {
     id: product.id,
     modelo: product.modelo,
     precio: product.precio,
     cantidad: 1,
-    imagen: product.imagen,
-    stock: product.stock // 🔥 CLAVE
+    // Usamos la primera imagen del array para la miniatura del carrito
+    imagen: product.imagenes[0], 
+    stock: product.stock
   };
 
- 
-this.carritoService.addToCart(item).subscribe({
+  this.carritoService.addToCart(item).subscribe({
     next: () => {
-       this.mensaje = 'Producto agregado 🛒';
+      this.mensaje = '¡Agregado! 🛒';
       setTimeout(() => this.mensaje = '', 2000);
       this.carritoService.openCart();
-    },
-    error: (err) =>console.error(err)
-
+    }
   });
 }
 }

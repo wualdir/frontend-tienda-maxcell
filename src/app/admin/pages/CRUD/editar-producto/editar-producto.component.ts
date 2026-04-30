@@ -63,7 +63,7 @@ export class EditarProductoComponent implements OnInit {
           espeAlmacenamiento: data.especificaciones?.almacenamiento?.toString() || ''
         }
       };
-      this.imagenUrlActual = data.imagen || null;
+      this.imagenUrlActual = data.imagenes[0] || null;
     });
   }
 

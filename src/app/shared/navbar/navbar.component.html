@@ -1,80 +1,95 @@
-<nav class="main-navbar">
+<nav class="navbar">
+  <!-- BARRA PRINCIPAL -->
+  <div class="navbar__main">
+    <div class="navbar__left-group">
+      <button class="navbar__btn-menu" (click)="toggleMenu()" aria-label="Abrir menú">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
 
-  <nav class="main-navbar1"> 
-    <a routerLink="/home" class="main-navbar1__logo-link">
-      <img class="main-navbar1__logo" src="/Mi-Logo3.svg" alt="Max Cell Logo">
-    </a>
-    <p class="main-navbar1__usuarioActivo" *ngIf="isLoggedIn$ | async" >usuario, {{ user$ | async }}</p>
-   
-    <ul class="main-navbar1__list">
-      <li class="main-navbar1__item">
-        <a routerLink="/login" class="main-navbar1__link">
-          <span class="main-navbar1__login">Identifícate</span>
-          <span class="material-symbols-outlined">person</span>
-        </a>
-      </li>
+      <a routerLink="/home" class="navbar__logo-container">
+        <img src="/Mi-Logo3.svg" alt="Max Cell Logo" class="navbar__logo">
+      </a>
+    </div>
 
+    <!-- Usuario: Centrado en Desktop -->
+    <div class="navbar__user-display desktop-only" *ngIf="isLoggedIn$ | async">
+      <span class="user-welcome">Hola, <strong>{{ user$ | async }}</strong></span>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div class="navbar__actions">
+      <a routerLink="/login" class="navbar__action-item" *ngIf="!(isLoggedIn$ | async)">
+        <span class="material-symbols-outlined">person</span>
+      </a>
+
+      <button class="navbar__action-item navbar__action-item--cart" (click)="verCarrito()">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="navbar__cart-badge" *ngIf="(cartCount$ | async) as count">
+          {{ count > 0 ? count : '' }}
+        </span>
+      </button>
+
+      <button class="navbar__action-item navbar__action-item--logout desktop-only" 
+              *ngIf="isLoggedIn$ | async" (click)="cerraSesion()">
+        <span class="material-symbols-outlined">logout</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- BUSCADOR CENTRADO -->
+  <div class="navbar__search-wrapper">
+    <div class="search-container">
+      <input type="text" [(ngModel)]="searchTerm" (input)="buscar()" (keyup.enter)="buscarConBoton()" placeholder="Buscar celulares..." class="search-container__input">
+      <button class="search-container__btn" (click)="buscarConBoton()">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- NAVEGACIÓN DESKTOP CON PANEL ADMIN PRO -->
+  <div class="navbar__nav-desktop desktop-only">
+    <div class="nav-links">
+      <a routerLink="/home" routerLinkActive="active">Home</a>
+      <a routerLink="/tienda" routerLinkActive="active">Tienda</a>
+      <a routerLink="/categorias" routerLinkActive="active">Categorías</a>
+      <a *ngIf="isLoggedIn$ | async" routerLink="/ordenes" routerLinkActive="active">Mis Pedidos</a>
+    </div>
     
-        <li class="main-navbar1__item">
-           <a *ngIf="isLoggedIn$ | async" routerLink="/ordenes" class="main-navbar1__pedidos">Mis pedidos</a>
-        </li>
-      
-
-      <li class="main-navbar1__item">
-        <a  class="main-navbar1__cart">
-          <span class="material-symbols-outlined">shopping_cart</span>
-         <span class="main-navbar1__carrito" 
-      *ngIf="(cartCount$ | async) as count" 
-      (click)="verCarrito()">
-  {{ count > 0 ? count : '' }}
-</span>
-        </a>
-      </li>
-
-     
-        <li class="main-navbar1__item">
-          <button *ngIf="isLoggedIn$ | async" (click)="cerraSesion()" class="main-navbar1__logout">
-            <span  class="material-symbols-outlined">logout</span>
-            Cerrar sesión
-          </button>
-        </li>
-      
-    </ul>
-  </nav>
-
-  <nav class="main-navbar2">
-    <div class="main-navbar2__search-container">
-      <input 
-        class="main-navbar2__input"
-        type="text"
-        [(ngModel)]="searchTerm"
-        (input)="buscar()"
-        (keyup.enter)="buscarConBoton()"
-        placeholder="Buscar celulares..."
-      />
-      <button class="main-navbar2__buttonBuscar" (click)="buscarConBoton()">🔍</button>
+    <!-- Panel Admin Modo Pro -->
+    <div class="nav-admin" *ngIf="isAdmin$ | async">
+      <a routerLink="/admin" class="nav-admin__link-pro">
+        <span class="material-symbols-outlined">admin_panel_settings</span>
+        <span>Panel Admin</span>
+      </a>
     </div>
-   
-    <div class="main-navbar2__busqueda" *ngIf="resultados.length > 0">
-      <div class="main-navbar2__busqueda-item" *ngFor="let p of resultados" (click)="irProducto(p.id)">
-        {{ p.marca }} -- {{ p.modelo }}
+  </div>
+
+  <!-- SIDEBAR MÓVIL -->
+  <div class="mobile-overlay" [class.active]="isOpen" (click)="closeMenu()">
+    <aside class="mobile-sidebar" (click)="$event.stopPropagation()">
+      <div class="mobile-sidebar__header">
+        <div class="user-profile" *ngIf="isLoggedIn$ | async">
+          <span class="material-symbols-outlined">account_circle</span>
+          <span><strong>{{ user$ | async }}</strong></span>
+        </div>
+        <button class="close-btn" (click)="closeMenu()">×</button>
       </div>
-    </div>
-  </nav> 
-  
-
-  <nav class="main-navbar3">
-    <div class="main-navbar3__links-left">
-      <a class="main-navbar3__link" routerLink="/home">Home</a>
-      <a class="main-navbar3__link" routerLink="/tienda">Tienda</a>
-      <a class="main-navbar3__link" routerLink="/categorias">Categorias</a>
-    </div>
-
-    <div class="main-navbar3__links-right">
-       <li class="main-navbar3__admin-item" *ngIf="isAdmin$ | async">
-         <a class="main-navbar3__link main-navbar3__link--admin" routerLink="/admin">panel</a>
-       </li>
-    </div>
-  </nav>
-
+      <nav class="mobile-sidebar__nav">
+        <a routerLink="/home" (click)="closeMenu()"><span class="material-symbols-outlined">home</span> Home</a>
+        <a routerLink="/tienda" (click)="closeMenu()"><span class="material-symbols-outlined">storefront</span> Tienda</a>
+        <a routerLink="/categorias" (click)="closeMenu()"><span class="material-symbols-outlined">category</span> Categorías</a>
+        <div class="separator"></div>
+        <ng-container *ngIf="isLoggedIn$ | async">
+          <a routerLink="/ordenes" (click)="closeMenu()"><span class="material-symbols-outlined">package</span> Mis Pedidos</a>
+          <a *ngIf="isAdmin$ | async" routerLink="/admin" (click)="closeMenu()" class="admin-link-mobile">
+            <span class="material-symbols-outlined">security</span> Panel Admin
+          </a>
+          <button (click)="cerraSesion(); closeMenu()" class="logout-btn">
+            <span class="material-symbols-outlined">logout</span> Cerrar Sesión
+          </button>
+        </ng-container>
+      </nav>
+    </aside>
+  </div>
 </nav>
+
