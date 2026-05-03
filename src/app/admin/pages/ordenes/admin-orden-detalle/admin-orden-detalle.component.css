@@ -322,11 +322,85 @@ select:active, select:focus {
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ==========================================================================
-   RESPONSIVE
+   CORRECCIÓN RESPONSIVE (SOLO LAYOUT)
    ========================================================================== */
-@media (max-width: 992px) {
-    .detail-grid { grid-template-columns: 1fr; }
-    .header-main h1 { font-size: 1.5rem; }
-    .product-item { grid-template-columns: 60px 1fr auto; }
-    .product-total { grid-column: 1 / -1; text-align: right; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 10px; }
+
+/* Tablet y pantallas medianas */
+@media (max-width: 1024px) {
+    .detail-grid {
+        grid-template-columns: 1fr; /* Sidebar pasa abajo automáticamente */
+        gap: 1.5rem;
+    }
+
+    .admin-container {
+        padding: 1rem;
+    }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+    .header-main {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-main h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Reestructuración del item de producto para pantallas pequeñas */
+    .product-item {
+        grid-template-columns: 60px 1fr; /* Solo 2 columnas principales */
+        grid-template-rows: auto auto;    /* Crea filas adicionales */
+        gap: 1rem;
+        padding: 1.5rem 0;
+    }
+
+    .img-wrapper {
+        grid-row: span 2; /* La imagen ocupa la altura de las dos filas */
+    }
+
+    .product-qty {
+        justify-self: start;
+        grid-column: 2;
+    }
+
+    .product-total {
+        grid-column: 2;
+        text-align: left;
+        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        padding-top: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .product-info h4 {
+        font-size: 1rem;
+    }
+
+    /* Ajuste de tarjetas de datos */
+    .card-section {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .summary-line.total {
+        font-size: 1.5rem;
+    }
+}
+
+/* Ajustes para móviles muy pequeños */
+@media (max-width: 480px) {
+    .btn-back {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .current-status-display {
+        flex-wrap: wrap;
+    }
+
+    .current-status-display label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
 }

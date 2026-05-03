@@ -1,20 +1,20 @@
+/* --- CONTENEDOR PRINCIPAL --- */
 .admin-container {
-    padding: var(--sp-xl) var(--sp-md);
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: var(--sp-lg);
 }
 
 .admin-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: var(--sp-xl);
 }
 
 .admin-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: var(--text-main);
-    margin-bottom: 5px;
 }
 
 .admin-subtitle {
@@ -22,55 +22,68 @@
     font-size: 0.9rem;
 }
 
-/* 🚀 Grid de Órdenes */
-.orders-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: var(--sp-lg);
-   
+/* --- BOTÓN REFRESH --- */
+.btn-refresh {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: var(--sp-sm) var(--sp-md);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-/* 💳 Estilo de las Cards */
+.btn-refresh:hover:not(:disabled) {
+    background: var(--accent-glow);
+    border-color: var(--accent-blue);
+}
+
+/* --- GRID DE ÓRDENES (SOLUCIÓN RESPONSIVE) --- */
+.orders-grid {
+    display: grid;
+    /* Auto-fill adaptativo: mínimo 320px por tarjeta */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--sp-md);
+}
+
+/* --- ESTILO DE TARJETA --- */
 .order-card {
-    background: var(--bg-card);
-    border: 1px solid rgb(173, 169, 169);
-    border-radius: 20px;
-    padding: var(--sp-lg);
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: var(--sp-md);
     display: flex;
     flex-direction: column;
     gap: var(--sp-md);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    transition: transform 0.2s;
 }
 
 .order-card:hover {
-    border-color: var(--accent-blue);
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px var(--accent-glow);
+    transform: translateY(-4px);
+    border-color: rgba(14, 165, 233, 0.3);
 }
 
-/* Encabezado de Card */
+/* HEADER DE TARJETA */
 .order-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid  rgb(173, 169, 169);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: var(--sp-sm);
 }
 
 .order-number {
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: 800;
+    font-family: monospace;
+    font-weight: bold;
     color: var(--accent-blue);
-    font-size: 1.1rem;
 }
 
 .order-date {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
-/* Cuerpo de la Card */
+/* CUERPO DE TARJETA */
 .order-body {
     display: flex;
     justify-content: space-between;
@@ -84,26 +97,23 @@
 }
 
 .user-icon {
-    width: 40px;
-    height: 40px;
-    background: var(--bg-dark);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 1.2rem;
+    background: var(--bg-dark);
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
 }
 
 .user-name {
     font-weight: 600;
-    color: var(--text-main);
-    margin: 0;
+    font-size: 0.95rem;
 }
 
 .user-items {
     font-size: 0.8rem;
     color: var(--text-muted);
-    margin: 0;
 }
 
 .order-financials {
@@ -111,60 +121,53 @@
 }
 
 .total-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    margin: 0;
 }
 
 .total-amount {
-    font-size: 1.3rem;
-    font-weight: 800;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--success);
-    margin: 0;
 }
 
-/* Footer y Estados */
+/* FOOTER DE TARJETA */
 .order-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: var(--sp-sm);
+    margin-top: auto;
 }
 
 .status-pill {
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--sp-sm);
     background: var(--bg-dark);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
 }
 
 .dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: gray;
 }
 
-/* Colores Dinámicos por Estado */
-.order-card.pendiente .dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
-.order-card.pagado .dot { background: #10b981; box-shadow: 0 0 8px #10b981; }
-.order-card.cancelado .dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
-.order-card.enviado .dot { background: #423ff1; box-shadow: 0 0 8px #393cee; }
-
+/* BOTÓN VER DETALLE */
 .btn-view {
     background: transparent;
     border: 1px solid var(--accent-blue);
     color: var(--accent-blue);
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.3s;
 }
 
 .btn-view:hover {
@@ -172,24 +175,45 @@
     color: white;
 }
 
-/* Barra de carga superior */
+/* --- ESTADOS ADICIONALES --- */
 .loading-bar {
-    height: 3px;
     width: 100%;
-    background: rgba(255,255,255,0.05);
+    height: 4px;
+    background: var(--bg-dark);
+    margin-bottom: var(--sp-md);
     overflow: hidden;
-    margin-bottom: 20px;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 .progress-fill {
+    width: 30%;
     height: 100%;
     background: var(--accent-blue);
-    width: 40%;
-    animation: loadingAnim 1.5s infinite ease-in-out;
+    animation: loadingAnim 1s infinite linear;
 }
 
 @keyframes loadingAnim {
     0% { transform: translateX(-100%); }
-    100% { transform: translateX(250%); }
+    100% { transform: translateX(400%); }
 }
+
+/* AJUSTES PARA MÓVILES EXTREMOS */
+@media (max-width: 400px) {
+    .orders-grid {
+        grid-template-columns: 1fr;
+    }
+    .order-body {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--sp-md);
+    }
+    .order-financials {
+        text-align: left;
+    }
+}
+
+/* ⚠️ TUS COLORES DINÁMICOS (SIN TOCAR) */
+.order-card.pendiente .dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+.order-card.pagado .dot { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.order-card.cancelado .dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+.order-card.enviado .dot { background: #423ff1; box-shadow: 0 0 8px #393cee; }

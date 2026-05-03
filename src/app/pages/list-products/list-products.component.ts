@@ -9,11 +9,12 @@ import { Producto } from '../../models/product.model';
 // Servicios
 import { CarritoService } from '../../services/carrito.service';
 import { CartItem } from '../../models/carrito.model';
+import { CloudinaryUrlPipe } from '../pipes/cloudinary.pipe';
 
 @Component({
   selector: 'app-list-products',
   standalone: true,
-  imports: [RouterLink, CommonModule, FormsModule],
+  imports: [RouterLink, CommonModule, FormsModule,CloudinaryUrlPipe],
   templateUrl: './list-products.component.html',
   styleUrl: './list-products.component.css'
 })

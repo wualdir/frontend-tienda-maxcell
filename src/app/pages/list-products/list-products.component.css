@@ -1,148 +1,385 @@
+/* =============================================
+   LISTA DE PRODUCTOS — lista-productos.component.css
+   Compatible con design system Dark Tech
+   ============================================= */
+
+/* === GRID PRINCIPAL === */
 .lista-productos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-    gap: var(--sp-md);
-    padding: var(--sp-md);
-    max-width: 1400px;
-    margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--sp-md);
+  padding: var(--sp-md);
+  margin: 0;
+  list-style: none;
 }
 
+/* === CARD BASE === */
 .card {
-    background-color: var(--bg-card);
-    border-radius: var(--sp-md);
-    padding: var(--sp-md);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    overflow: hidden;
+  position: relative;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(14, 165, 233, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
 }
 
-.card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent-blue);
-    box-shadow: 0 8px 24px var(--accent-glow);
+.card:hover:not(.agotado) {
+  transform: translateY(-4px);
+  border-color: rgba(14, 165, 233, 0.4);
+  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.12);
 }
 
-/* Botón flotante de Carrito */
+/* === ESTADO AGOTADO === */
+.card.agotado {
+  cursor: default;
+  opacity: 0.65;
+  filter: grayscale(0.3);
+  pointer-events: none; /* evita el routerLink */
+}
+
+/* === BADGE SIN STOCK === */
+.badge-status {
+  position: absolute;
+  top: var(--sp-sm);
+  left: var(--sp-sm);
+  background: var(--error);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* === BOTÓN QUICK ADD === */
 .btn-quick-add {
-    position: absolute;
-    top: var(--sp-md);
-    right: var(--sp-md);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background-color: var(--accent-blue);
-    color: white;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: absolute;
+  top: var(--sp-sm);
+  right: var(--sp-sm);
+  background: var(--accent-blue);
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.15s ease;
 }
 
-.btn-quick-add:hover {
-    transform: scale(1.15);
-    background-color: var(--success);
-    box-shadow: 0 0 15px var(--accent-glow);
+.card:hover .btn-quick-add {
+  opacity: 1;
 }
 
+.btn-quick-add:active {
+  transform: scale(0.92);
+}
+
+.btn-quick-add .icon {
+  font-size: 16px;
+  line-height: 1;
+  display: block;
+}
+
+/* === IMAGEN === */
 .card-img {
-    width: 100%;
-    aspect-ratio: 1 / 1.1;
-    object-fit: cover;
-    border-radius: var(--sp-sm);
-    margin-bottom: var(--sp-sm);
-    background-color: var(--bg-dark);
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  background: var(--bg-dark);
+  transition: transform 0.35s ease;
+  flex-shrink: 0;
 }
 
-h3 {
-    font-size: 1rem;
-    color: var(--text-main);
-    margin: 0 0 var(--sp-xs) 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: 30px;
+.card:hover:not(.agotado) .card-img {
+  transform: scale(1.04);
 }
 
-p {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-bottom: var(--sp-md);
+/* === CUERPO DE LA CARD === */
+.card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: var(--sp-md) var(--sp-sm) 0;
 }
 
+.card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: var(--sp-xs) var(--sp-sm) 0;
+}
+
+/* === BLOQUE DE PRECIOS === */
 .precios-container {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  flex-wrap: wrap;
+  padding: var(--sp-sm) var(--sp-sm) 0;
 }
 
 .precio-original {
-    font-size: 0.75rem;
-    color: var(--warning);
-    text-decoration: line-through;
-    opacity: 0.8;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: line-through;
 }
 
 .precio {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--accent-blue);
-    margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  margin: 0;
 }
 
+/* === BOTÓN VER DETALLE === */
 .btn-detalle {
-    display: block;
-    text-align: center;
-    background-color: var(--accent-blue);
-    color: var(--text-main);
-    padding: var(--sp-sm) var(--sp-md);
-    border-radius: var(--sp-sm);
-    font-weight: 600;
-    font-size: 0.85rem;
-    margin-top: var(--sp-md);
+  margin: var(--sp-md) var(--sp-sm) var(--sp-sm);
+  padding: var(--sp-sm) var(--sp-md);
+  background: var(--accent-glow);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: 8px;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.card.agotado {
-    filter: grayscale(1);
-    opacity: 0.6;
-}
-
-.badge-status {
-    position: absolute;
-    top: var(--sp-sm);
-    left: var(--sp-sm);
-    background-color: var(--error);
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 800;
-    padding: 2px 8px;
-    border-radius: 4px;
-    z-index: 5;
+.card:hover:not(.agotado) .btn-detalle {
+  background: rgba(14, 165, 233, 0.22);
+  border-color: var(--accent-blue);
 }
 
 .btn-detalle.disabled {
-    background-color: var(--bg-dark);
-    color: var(--text-muted);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.card-img {
-    width: 100%;
-    height: 250px;    /* O la altura que prefieras */
-    object-fit: cover; /* Esto evita que la imagen se estire feo */
-    border-radius: 15px;
+  color: var(--text-muted);
+  background: rgba(148, 163, 184, 0.06);
+  border-color: rgba(148, 163, 184, 0.12);
+  cursor: not-allowed;
 }
 
-@media (min-width: 1024px) {
-    .lista-productos {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: var(--sp-lg);
-    }
+/* =============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================= */
+
+/* XL — 4+ columnas (≥1280px) */
+@media (min-width: 1280px) {
+  .lista-productos {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--sp-lg);
+    padding: var(--sp-lg);
+  }
+}
+
+/* LG — 3 columnas (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .lista-productos {
+    grid-template-columns: repeat(3, 1fr);
+    padding: var(--sp-md) var(--sp-lg);
+  }
+}
+
+/* MD — 2 columnas (640px - 1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .lista-productos {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-md);
+    padding: var(--sp-md);
+  }
+}
+
+/* SM — mobile (< 640px) */
+@media (max-width: 639px) {
+  .lista-productos {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-sm);
+    padding: var(--sp-sm);
+  }
+
+  /* Cards más compactas en mobile */
+  .card h3 {
+    font-size: 13px;
+    margin: var(--sp-sm) var(--sp-xs) 0;
+  }
+
+  .card p {
+    font-size: 11px;
+    margin: 2px var(--sp-xs) 0;
+  }
+
+  .precios-container {
+    padding: var(--sp-xs) var(--sp-xs) 0;
+    gap: 4px;
+  }
+
+  .precio {
+    font-size: 15px;
+  }
+
+  .btn-detalle {
+    margin: var(--sp-sm) var(--sp-xs) var(--sp-xs);
+    padding: 6px var(--sp-sm);
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  /* El botón quick-add siempre visible en touch (no hay hover) */
+  .btn-quick-add {
+    opacity: 1;
+    width: 30px;
+    height: 30px;
+  }
+
+  .btn-quick-add .icon {
+    font-size: 14px;
+  }
+}
+
+/* XS — mobile muy pequeño (< 360px) → 1 columna */
+@media (max-width: 359px) {
+  .lista-productos {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   OFERTAS — añadir/reemplazar en tu CSS
+   ============================================= */
+
+/* Card en oferta: borde ámbar */
+.card.oferta {
+  border-color: rgba(245, 158, 11, 0.45);
+}
+.card.oferta:hover {
+  border-color: var(--warning);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.18);
+}
+
+/* Ribbon diagonal esquina superior izquierda */
+.ribbon {
+  position: absolute;
+  top: 14px;
+  left: -28px;
+  background: var(--warning);
+  color: #451a03;           /* marrón oscuro del ramp amber para contraste */
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 36px;
+  transform: rotate(-45deg);
+  z-index: 3;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Badge % de descuento (reemplaza o convive con btn-quick-add) */
+.badge-descuento {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--warning);
+  color: #451a03;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  z-index: 2;
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
+}
+.badge-descuento small {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Al hacer hover aparece el btn-quick-add y oculta el badge-descuento */
+.card.oferta:hover .badge-descuento { opacity: 0; }
+.card.oferta:hover .btn-quick-add   { opacity: 1; }
+
+/* ---- Bloque de precios en oferta ---- */
+.precios-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.fila-original {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Precio original: más pequeño, tachado */
+.precio-original {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* Pill "Ahorras S/. X" */
+.ahorro-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(245, 158, 11, 0.18);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 1px 6px;
+  border-radius: 20px;
+}
+
+/* Precio final en oferta: grande y ámbar */
+.precio {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--warning);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Precio sin descuento: queda en azul */
+.precio.normal {
+  color: var(--accent-blue);
+  font-size: 17px;
+}
+
+/* Separador y etiqueta */
+.oferta-divider {
+  height: 1px;
+  background: rgba(245, 158, 11, 0.2);
+  margin: 6px 0 3px;
+}
+.oferta-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--warning);
+  text-transform: uppercase;
+}
+
+/* Botón ver detalle en modo oferta */
+.btn-detalle.oferta-btn {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: var(--warning);
+}
+.card.oferta:hover .btn-detalle.oferta-btn {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: var(--warning);
 }

@@ -71,17 +71,14 @@
   transform: translateY(-1px);
 }
 
-.navbar__logo {
-  height: 10px;
-  filter: brightness(0) invert(1);
-  transition: var(--transition-smooth);
-}
 
-/* Badge del Carrito */
+
+/* Ajuste del Badge */
 .navbar__cart-badge {
   position: absolute;
-  top: 0;
-  right: 0;
+  /* Ajusta estos valores según el tamaño de tu icono */
+  top: 0; 
+  right: 0; 
   background: var(--error);
   color: white;
   font-size: 10px;
@@ -92,6 +89,24 @@
   align-items: center;
   justify-content: center;
   border: 1.5px solid var(--bg-dark);
+  
+  /* Evita que el badge capture clicks, para que el botón del carrito funcione bien */
+  pointer-events: none; 
+  
+  /* Asegura que siempre esté por encima */
+  z-index: 10;
+}
+.navbar__logo {
+  height: 10px;
+  filter: brightness(0) invert(1);
+  transition: var(--transition-smooth);
+}
+/* Modifica o añade esto a tu CSS */
+.navbar__action-item--cart {
+  position: relative; /* CRUCIAL: El badge se posicionará respecto a ESTE botón */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* --- 2. BUSCADOR CENTRADO --- */

@@ -2,8 +2,23 @@
   <section 
     class="card" 
     *ngFor="let prod of productos" 
+    [class.oferta]="prod.precioOriginal && prod.precioOriginal > prod.precio"
+    
     [class.agotado]="prod.stock === 0"
     [routerLink]="prod.stock > 0 ? ['/products', prod.id] : null">
+
+     <!-- Ribbon -->
+    <div *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio" class="ribbon">
+    OFERTA
+  </div>
+  <!-- Badge % descuento (en lugar del btn-quick-add cuando no hay hover) -->
+  <div 
+    *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio && prod.stock > 0"
+    class="badge-descuento">
+    -{{ ((1 - prod.precio / prod.precioOriginal) * 100) | number:'1.0-0' }}%
+    <small>dto.</small>
+  </div>
+
 
     <div *ngIf="prod.stock === 0" class="badge-status">
       Sin Stock
@@ -17,28 +32,40 @@
       <span class="icon">🛒</span>
     </button>
 
-   <img
-  class="card-img"
-  [src]="(prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/200x250'"
-  [alt]="prod.modelo"
->
+    <!-- CAMBIO AQUÍ: Aplicamos el pipe cloudinaryUrl -->
+    <img
+      class="card-img"
+     [src]="(prod.imagenes && prod.imagenes.length > 0) ? (prod.imagenes[0] | cloudinaryUrl:300:400) : 'https://via.placeholder.com/300x400'"
+      [alt]="prod.modelo"
+    >
 
     <h3>{{ prod.modelo }}</h3>
     <p>{{ prod.marca }}</p>
 
     <div class="precios-container">
-      <span class="precio-original" *ngIf="prod.precioOriginal && (prod.precioOriginal > prod.precio)">
-        {{ prod.precioOriginal | currency:'S/. ' }}
+      <div class="fila-original" *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio">
+      <span class="precio-original">{{ prod.precioOriginal | currency:'S/. ' }}</span>
+      <span class="ahorro-badge">
+        Ahorras {{ (prod.precioOriginal - prod.precio) | currency:'S/. ' }}
       </span>
+     </div>
       
-      <h4 class="precio">
-        {{ prod.precio | currency:'S/. ' }}
-      </h4>
+      <h4 class="precio" [class.normal]="!(prod.precioOriginal && prod.precioOriginal > prod.precio)">
+      {{ prod.precio | currency:'S/. ' }}
+    </h4>
+
+     <ng-container *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio">
+      <div class="oferta-divider"></div>
+      <span class="oferta-label">Precio de oferta</span>
+    </ng-container>
+
     </div>
 
-    <div class="btn-detalle" [class.disabled]="prod.stock === 0">
-      {{ prod.stock > 0 ? 'Ver detalle' : 'No disponible' }}
-    </div>
+    <div class="btn-detalle"
+    [class.oferta-btn]="prod.precioOriginal && prod.precioOriginal > prod.precio"
+    [class.disabled]="prod.stock === 0">
+    {{ prod.stock > 0 ? 'Ver detalle' : 'No disponible' }}
+  </div>
 
   </section>
 </article>

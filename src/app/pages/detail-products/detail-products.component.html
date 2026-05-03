@@ -3,31 +3,34 @@
 
   <div class="product-grid" *ngIf="producto">
     
-    <!-- SECCIÓN MULTIMEDIA -->
+  <!-- SECCIÓN MULTIMEDIA -->
     <div class="media-container">
       <div class="thumbnails-track">
+        <!-- MINIATURAS: Sugerido 100x100 (cuadradas para ordenarlas mejor) -->
         <div *ngFor="let img of producto.imagenes" 
              class="thumb-box" 
              [class.active]="img === imagenPrincipal && !mostrarVideo"
              (click)="cambiarImagen(img)">
-        <!-- Cambia esto en tu visor principal -->
-<img [src]="img || 'https://via.placeholder.com/400'" 
-     [alt]="producto.modelo" 
-     class="main-img-neon">
+          <img [src]="img | cloudinaryUrl:100:100" 
+               [alt]="producto.modelo">
         </div>
         
-        <!-- Miniatura de Video si existe -->
+        <!-- Miniatura de Video: También 100x100 -->
         <div *ngIf="producto.videoUrl" class="thumb-box video-trigger" 
-             [class.active]="mostrarVideo"
-             (click)="activarVideo()">
+             (click)="activarVideo()"
+             [class.active]="mostrarVideo">
           <span class="play-icon">▶</span>
-          <img [src]="producto.imagenes[0]" alt="Preview video">
+          <img [src]="producto.imagenes[0] | cloudinaryUrl:100:100" alt="Preview video">
         </div>
       </div>
 
       <div class="main-viewer">
         <ng-container *ngIf="!mostrarVideo; else videoTpl">
-          <img [src]="imagenPrincipal" class="main-img-neon" [alt]="producto.modelo">
+          <!-- IMAGEN PRINCIPAL: Sugerido 800x1000 (Vertical Alta Calidad) -->
+          <!-- Esto hará que el neón y los detalles del equipo resalten mucho -->
+          <img [src]="imagenPrincipal | cloudinaryUrl:600:800" 
+               class="main-img-neon" 
+               [alt]="producto.modelo">
         </ng-container>
         
         <ng-template #videoTpl>
@@ -71,7 +74,7 @@
 
       <button class="btn-buy-tech" (click)="addToCart(producto)" [disabled]="producto.stock === 0">
         <span class="btn-icon">🛒</span>
-        {{ producto.stock > 0 ? 'AÑADIR AL ARSENAL' : 'PRODUCTO AGOTADO' }}
+        {{ producto.stock > 0 ? 'AÑADIR AL CARRITO' : 'PRODUCTO AGOTADO' }}
       </button>
 
       <div class="benefits">

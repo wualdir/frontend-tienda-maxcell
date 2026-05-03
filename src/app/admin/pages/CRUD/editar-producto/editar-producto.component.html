@@ -44,15 +44,33 @@
       </div>
 
       <div class="form-section">
-        <h3 class="section-title">🛠️ Ficha Técnica & Imagen</h3>
+        <h3 class="section-title">🛠️ Multimedia & Ficha Técnica</h3>
         
-        <div class="image-upload" (click)="fileInput.click()">
-          <input type="file" #fileInput (change)="onFile($event)" hidden>
-          
-         <img [src]="imagePreview || imagenUrlActual || 'https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png'" class="preview-img">
-          
-          <div class="upload-overlay">
-            <span>Cambiar Imagen 📸</span>
+        <div class="multimedia-container">
+          <!-- Botón de carga -->
+          <div class="upload-zone-v2" (click)="fileInput.click()">
+            <input type="file" #fileInput (change)="onFilesSelected($event)" multiple accept="image/*" hidden>
+            <div class="upload-content">
+              <span class="icon">📸</span>
+              <span>Añadir Fotos</span>
+            </div>
+          </div>
+
+          <!-- Galería unificada de miniaturas -->
+          <div class="mini-gallery-grid">
+            <!-- Fotos actuales en BD -->
+            <div *ngFor="let url of imagenesActuales; let i = index" class="mini-card current">
+              <img [src]="url">
+              <button type="button" class="btn-x" (click)="removeExistingImage(i)">×</button>
+              <span class="badge">Actual</span>
+            </div>
+
+            <!-- Fotos nuevas por subir -->
+            <div *ngFor="let pre of imagePreviews; let i = index" class="mini-card new">
+              <img [src]="pre">
+              <button type="button" class="btn-x" (click)="removeNewImage(i)">×</button>
+              <span class="badge">Nueva</span>
+            </div>
           </div>
         </div>
 
@@ -72,6 +90,10 @@
           <div class="input-group">
             <label>Memoria RAM</label>
             <input type="text" [(ngModel)]="producto.specs.espeRam" name="ram">
+          </div>
+          <div class="input-group full-width">
+            <label>Almacenamiento</label>
+            <input type="text" [(ngModel)]="producto.specs.espeAlmacenamiento" name="almacen">
           </div>
         </div>
       </div>

@@ -11,9 +11,11 @@ import { CommonModule } from '@angular/common';
   templateUrl: './crear-producto.component.html',
   styleUrl: './crear-producto.component.css'
 })
+
 export class CrearProductoComponent {
   private service = inject(AdminProductoService);
   private router = inject(Router);
+  
 
   // Modelo de datos sincronizado con el Backend
   producto = {
@@ -36,6 +38,8 @@ export class CrearProductoComponent {
   imagenes: File[] = [];
   imagePreviews: string[] = [];
   loading = false;
+
+  
 
 
   // Maneja la selección de múltiples imágenes

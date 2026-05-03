@@ -5,10 +5,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CarritoService } from '../../services/carrito.service';
 import { CartItemUI } from '../../models/carrito.model';
+import { CloudinaryUrlPipe } from '../pipes/cloudinary.pipe';
 
 @Component({
   selector: 'app-detail-products',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink,CloudinaryUrlPipe],
   templateUrl: './detail-products.component.html',
   styleUrl: './detail-products.component.css'
 })

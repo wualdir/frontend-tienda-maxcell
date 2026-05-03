@@ -1,200 +1,133 @@
-/* Contenedor Principal */
+/* --- CONTENEDOR PRINCIPAL --- */
 .form-container {
-    padding: var(--sp-xl) var(--sp-md);
-    max-width: 1100px;
-    margin: 0 auto;
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .form-header {
-    margin-bottom: var(--sp-xl);
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--accent-blue);
+  padding-left: 1rem;
 }
 
-.form-title {
-    color: var(--text-main);
-    font-size: 1.8rem;
-    font-weight: 800;
-    margin-bottom: var(--sp-xs);
-}
-
-.form-subtitle {
-    color: var(--text-muted);
-}
-
-.form-subtitle .accent {
-    color: var(--accent-blue);
-    font-weight: 600;
-}
-
-/* Estilo del Formulario */
-.dark-form {
-    background-color: var(--bg-card);
-    padding: var(--sp-xl);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
+.accent { color: var(--accent-blue); font-weight: 700; }
 
 .form-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: var(--sp-xl);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2rem;
 }
 
-@media (max-width: 900px) {
-    .form-grid { grid-template-columns: 1fr; }
+/* --- SECCIÓN MULTIMEDIA (NUEVA) --- */
+.multimedia-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--bg-dark);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
-.section-title {
-    color: var(--accent-blue);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: var(--sp-lg);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.upload-zone-v2 {
+  width: 100%;
+  padding: 1rem;
+  border: 2px dashed rgba(14, 165, 233, 0.3);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-/* Inputs y Grupos */
-.input-group {
-    margin-bottom: var(--sp-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-sm);
+.upload-zone-v2:hover {
+  background: rgba(14, 165, 233, 0.05);
+  border-color: var(--accent-blue);
 }
 
-label {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-weight: 500;
+.mini-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.8rem;
 }
+
+.mini-card {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mini-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mini-card.current { border-color: rgba(255, 255, 255, 0.2); }
+.mini-card.new { border-color: var(--accent-blue); }
+
+.btn-x {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 10px;
+  text-align: center;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 2px 0;
+}
+
+/* --- FORM COMPONENTS & SPECS --- */
+.input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.full-width { grid-column: span 2; }
 
 input, textarea {
-    background-color: var(--bg-dark);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-main);
-    padding: 14px;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
+  padding: 12px;
+  background: var(--bg-dark);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #fff;
 }
 
-input:focus, textarea:focus {
-    outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 15px var(--accent-glow);
-    background-color: #162033;
-}
-
-.input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--sp-md);
-}
-
-/* Resaltado de precios */
-.highlight-warn {
-    border-color: rgba(245, 158, 11, 0.3);
-    color: var(--warning);
-    font-weight: 600;
-}
-
-/* Área de Imagen */
-.image-upload {
-    position: relative;
-    width: 100%;
-    height: 250px;
-    background: var(--bg-dark);
-    border: 2px dashed rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    overflow: hidden;
-    cursor: pointer;
-    margin-bottom: var(--sp-lg);
-}
-
-.preview-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: var(--sp-md);
-}
-
-.upload-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(4px);
-}
-
-.image-upload:hover .upload-overlay {
-    opacity: 1;
-}
-
-.upload-overlay span {
-    background: var(--accent-blue);
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-/* Grid de Especificaciones */
-.specs-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--sp-md);
-}
-
-/* Botones de Acción */
 .form-actions {
-    margin-top: var(--sp-xl);
-    padding-top: var(--sp-xl);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: var(--sp-lg);
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
 }
 
-.btn-cancel {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.2s;
-}
+.btn-save.update { background: var(--success); color: white; padding: 12px 30px; border-radius: 8px; cursor: pointer; border: none; }
+.btn-cancel { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); padding: 12px 30px; border-radius: 8px; cursor: pointer; }
 
-.btn-cancel:hover {
-    color: var(--text-main);
-}
-
-.btn-save {
-    background-color: var(--accent-blue);
-    color: white;
-    padding: 16px 40px;
-    border: none;
-    border-radius: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 0 20px var(--accent-glow);
-    transition: all 0.3s ease;
-}
-
-.btn-save:hover:not(:disabled) {
-    transform: translateY(-3px);
-    filter: brightness(1.1);
-    box-shadow: 0 0 30px var(--accent-glow);
-}
-
-.btn-save:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    filter: grayscale(1);
+@media (max-width: 600px) {
+  .form-grid, .input-row, .specs-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: span 1; }
 }

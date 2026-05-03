@@ -19,7 +19,6 @@ export class EditarProductoComponent implements OnInit {
   id!: string;
   loading = false;
 
-  // Objeto reactivo para el formulario
   producto: any = {
     modelo: '',
     marca: '',
@@ -36,9 +35,9 @@ export class EditarProductoComponent implements OnInit {
     }
   };
 
-  imagen: File | null = null;
-  imagePreview: string | null = null;
-  imagenUrlActual: string | null = null;
+  imagenesNuevas: File[] = [];
+  imagePreviews: string[] = [];
+  imagenesActuales: string[] = [];
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id')!;
@@ -47,7 +46,6 @@ export class EditarProductoComponent implements OnInit {
 
   cargarDatos() {
     this.service.getById(this.id).subscribe((data) => {
-      // Mapeamos los datos recibidos al objeto local
       this.producto = {
         modelo: data.modelo,
         marca: data.marca,
@@ -63,45 +61,69 @@ export class EditarProductoComponent implements OnInit {
           espeAlmacenamiento: data.especificaciones?.almacenamiento?.toString() || ''
         }
       };
-      this.imagenUrlActual = data.imagenes[0] || null;
+      this.imagenesActuales = [...(data.imagenes || [])];
     });
   }
 
-  onFile(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.imagen = file;
-      const reader = new FileReader();
-      reader.onload = () => this.imagePreview = reader.result as string;
-      reader.readAsDataURL(file);
+  onFilesSelected(event: any) {
+    const files = event.target.files;
+    if (files) {
+      const newFiles = Array.from(files) as File[];
+      this.imagenesNuevas = [...this.imagenesNuevas, ...newFiles];
+
+      newFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => this.imagePreviews.push(reader.result as string);
+        reader.readAsDataURL(file);
+      });
     }
+  }
+
+  // Quitar de la lista de nuevas (antes de subir)
+  removeNewImage(index: number) {
+    this.imagenesNuevas.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
+  }
+
+  // Quitar de las que ya existen en la BD
+  removeExistingImage(index: number) {
+    this.imagenesActuales.splice(index, 1);
   }
 
   actualizar() {
     this.loading = true;
     const formData = new FormData();
 
-   // 1. Añadimos datos básicos tipando 'value' como 'any' o 'string | number'
-Object.entries(this.producto).forEach(([key, value]) => {
-  // Verificamos que no sea el objeto de specs y que el valor no sea nulo
-  if (key !== 'specs' && value !== null && value !== undefined) {
-    formData.append(key, String(value)); // String() es más seguro que .toString()
-  }
-});
+    // 1. Datos básicos
+    formData.append('modelo', this.producto.modelo);
+    formData.append('marca', this.producto.marca);
+    formData.append('precio', this.producto.precio.toString());
+    formData.append('precioOriginal', this.producto.precioOriginal.toString());
+    formData.append('stock', this.producto.stock.toString());
+    formData.append('descripcion', this.producto.descripcion);
 
-    // 2. Añadimos specs (con los nombres que espera el backend)
-    formData.append('camaraPrincipal', this.producto.specs.espeCamPrincipal);
-    formData.append('pantalla', this.producto.specs.espePantalla);
-    formData.append('bateria', this.producto.specs.espeBateria);
-    formData.append('ram', this.producto.specs.espeRam);
-    formData.append('almacenamiento', this.producto.specs.espeAlmacenamiento);
+    // 2. Specs para el Backend
+    formData.append('espeCamPrincipal', this.producto.specs.espeCamPrincipal);
+    formData.append('espePantalla', this.producto.specs.espePantalla);
+    formData.append('espeBateria', this.producto.specs.espeBateria);
+    formData.append('espeRam', this.producto.specs.espeRam);
+    formData.append('espeAlmacenamiento', this.producto.specs.espeAlmacenamiento);
 
-    // 3. Imagen solo si se cambió
-    if (this.imagen) formData.append('imagen', this.imagen);
+    // 3. Imágenes nuevas
+    this.imagenesNuevas.forEach(file => {
+      formData.append('imagenes', file);
+    });
+
+    // 4. 🔥 Enviamos el array de imágenes que decidimos conservar
+    // Nota: El backend debe estar preparado para recibir este campo
+    formData.append('imagenesRestantes', JSON.stringify(this.imagenesActuales));
 
     this.service.updateProduct(this.id, formData).subscribe({
       next: () => this.router.navigate(['/admin/productos']),
-      error: () => this.loading = false
+      error: (err) => {
+        console.error("Error al actualizar:", err);
+        this.loading = false;
+      }
     });
   }
 }
