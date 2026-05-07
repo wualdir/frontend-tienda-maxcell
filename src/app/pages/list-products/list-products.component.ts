@@ -50,4 +50,33 @@ export class ListProductsComponent {
       });
     }
   }
+  // Dentro de tu clase ListProductsComponent
+ngOnChanges() {
+  this.ordenarProductos();
+}
+
+ordenarProductos() {
+  this.productos.sort((a, b) => {
+    // 1. Priorizar los que tienen oferta (precioOriginal)
+    const tieneOfertaA = a.precioOriginal && a.precioOriginal > a.precio ? 1 : 0;
+    const tieneOfertaB = b.precioOriginal && b.precioOriginal > b.precio ? 1 : 0;
+
+    if (tieneOfertaA !== tieneOfertaB) {
+      return tieneOfertaB - tieneOfertaA; // Los que tienen oferta van arriba
+    }
+
+    // 2. Si ambos tienen oferta, mostrar el que tiene mayor porcentaje de descuento
+    if (tieneOfertaA && tieneOfertaB) {
+      const descA = (a.precioOriginal! - a.precio) / a.precioOriginal!;
+      const descB = (b.precioOriginal! - b.precio) / b.precioOriginal!;
+      return descB - descA;
+    }
+
+    return 0; // Mantener orden original para el resto
+  });
+
+  // Si solo quieres mostrar los 3 mejores después de ordenar:
+  // this.productos = this.productos.slice(0, 3);
+}
+
 }

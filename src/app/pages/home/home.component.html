@@ -1,9 +1,8 @@
-<h2>🔥 Productos destacados</h2>
 <section class="hero-carousel">
   <div class="carousel-container">
     <div class="carousel-slide" 
-         *ngFor="let slide of slides; let i = index" 
-         [class.active]="i === currentSlide">
+    *ngFor="let slide of slides; let i = index" 
+    [class.active]="i === currentSlide">
       
       <!-- Imagen con máscara de degradado para mejor legibilidad -->
       <div class="image-wrapper">
@@ -18,7 +17,7 @@
         <button routerLink="/tienda" class="btn-primary">Explorar Ahora</button>
       </div>
     </div>
-
+    
     <!-- Controles más minimalistas -->
     <button class="control prev" (click)="prevSlide()">
       <span class="material-symbols-outlined">chevron_left</span>
@@ -29,9 +28,9 @@
   </div>
 </section>
 
+<h2>🔥 Productos destacados</h2>
 <ng-container *ngIf="(productos$ | async) as productos">
-  <app-list-products
-    [productos]="productos.slice(0, 3)">
+  <app-list-products [productos]="productos">
   </app-list-products>
 </ng-container>
 

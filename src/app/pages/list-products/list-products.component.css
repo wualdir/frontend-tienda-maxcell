@@ -241,10 +241,16 @@
     opacity: 1;
     width: 30px;
     height: 30px;
+    position: relative;
+   left: 100px;
+  
   }
 
   .btn-quick-add .icon {
     font-size: 14px;
+    position: absolute;
+   
+     
   }
 }
 
