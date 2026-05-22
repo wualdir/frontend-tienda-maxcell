@@ -3,10 +3,11 @@ import { Producto } from '../../../../models/product.model';
 import { AdminProductoService } from '../../../services/admin-producto.service';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CloudinaryUrlPipe } from '../../../../pages/pipes/cloudinary.pipe';
 
 @Component({
   selector: 'app-products',
-  imports: [RouterLink,CommonModule],
+  imports: [RouterLink,CommonModule,CloudinaryUrlPipe],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })

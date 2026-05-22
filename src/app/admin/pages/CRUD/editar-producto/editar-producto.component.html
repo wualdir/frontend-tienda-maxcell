@@ -7,14 +7,13 @@
   <form (ngSubmit)="actualizar()" class="dark-form">
     <div class="form-grid">
       
+      <!-- Sección de Datos -->
       <div class="form-section">
         <h3 class="section-title">📦 Datos del Producto</h3>
-        
         <div class="input-group">
           <label>Modelo</label>
           <input type="text" [(ngModel)]="producto.modelo" name="modelo" required>
         </div>
-
         <div class="input-row">
           <div class="input-group">
             <label>Marca</label>
@@ -25,7 +24,6 @@
             <input type="number" [(ngModel)]="producto.stock" name="stock">
           </div>
         </div>
-
         <div class="input-row">
           <div class="input-group">
             <label>Precio Oferta (S/)</label>
@@ -36,18 +34,16 @@
             <input type="number" [(ngModel)]="producto.precioOriginal" name="precioOriginal">
           </div>
         </div>
-
         <div class="input-group">
           <label>Descripción</label>
           <textarea [(ngModel)]="producto.descripcion" name="descripcion" rows="4"></textarea>
         </div>
       </div>
 
+      <!-- Sección Multimedia -->
       <div class="form-section">
         <h3 class="section-title">🛠️ Multimedia & Ficha Técnica</h3>
-        
         <div class="multimedia-container">
-          <!-- Botón de carga -->
           <div class="upload-zone-v2" (click)="fileInput.click()">
             <input type="file" #fileInput (change)="onFilesSelected($event)" multiple accept="image/*" hidden>
             <div class="upload-content">
@@ -56,24 +52,24 @@
             </div>
           </div>
 
-          <!-- Galería unificada de miniaturas -->
-          <div class="mini-gallery-grid">
-            <!-- Fotos actuales en BD -->
-            <div *ngFor="let url of imagenesActuales; let i = index" class="mini-card current">
-              <img [src]="url">
-              <button type="button" class="btn-x" (click)="removeExistingImage(i)">×</button>
-              <span class="badge">Actual</span>
-            </div>
+         <div class="mini-gallery-grid">
+  <!-- Imágenes que ya están en la base de datos (IDs) -->
+  <div *ngFor="let url of imagenesActuales; let i = index" class="mini-card current">
+    <img [src]="url | cloudinaryUrl:120:120"> 
+    <button type="button" class="btn-x" (click)="removeExistingImage(i)">×</button>
+    <span class="badge">Actual</span>
+  </div>
 
-            <!-- Fotos nuevas por subir -->
-            <div *ngFor="let pre of imagePreviews; let i = index" class="mini-card new">
-              <img [src]="pre">
-              <button type="button" class="btn-x" (click)="removeNewImage(i)">×</button>
-              <span class="badge">Nueva</span>
-            </div>
-          </div>
+  <!-- Previsualización de imágenes nuevas (Base64) -->
+  <div *ngFor="let pre of imagePreviews; let i = index" class="mini-card new">
+    <img [src]="pre">
+    <button type="button" class="btn-x" (click)="removeNewImage(i)">×</button>
+    <span class="badge">Nueva</span>
+  </div>
+</div>
         </div>
 
+        <!-- Ficha Técnica -->
         <div class="specs-grid">
           <div class="input-group">
             <label>Cámara Principal</label>

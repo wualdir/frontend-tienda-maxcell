@@ -30,23 +30,36 @@ export class AdminProductoService {
     return this.http.get<Producto>(`${this.url}/${id}`);
   }
   
-  // ======= CRUD con Auto-Refresco =======
+ // ======= CRUD con Auto-Refresco Optimizado =======
 
-  createProduct(data: FormData): Observable<Producto> {
-    // Al usar FormData (para imágenes), el Interceptor se encargará del token
-    return this.http.post<Producto>(this.url, data).pipe(
-      // Al crear, refrescamos la lista automáticamente
-      tap(()=>this.obtenerProductos()));
-  }
+createProduct(data: FormData): Observable<Producto> {
+  return this.http.post<Producto>(this.url, data).pipe(
+    tap((nuevoProducto) => {
+      // Agregamos el nuevo producto al inicio de la lista local sin recargar todo
+      const productosActuales = this.productosSubject.value;
+      this.productosSubject.next([nuevoProducto, ...productosActuales]);
+    })
+  );
+}
 
-  updateProduct(id: string, data: any): Observable<Producto> {
-    // Si envías imágenes, usas FormData; si es solo texto, JSON. 
-    // El interceptor ya maneja esto.
-
-    return this.http.put<Producto>(`${this.url}/${id}`, data).pipe(
-      // Al crear, refrescamos la lista automáticamente
-      tap(()=>this.obtenerProductos()));;
-  }
+updateProduct(id: string, data: any): Observable<Producto> {
+  return this.http.put<Producto>(`${this.url}/${id}`, data).pipe(
+    tap((productoEditado) => {
+      // Buscamos el producto en la lista local y lo reemplazamos con la respuesta del servidor
+      const productosActuales = this.productosSubject.value;
+      const index = productosActuales.findIndex(p => p.id === id || (p as any)._id === id);
+      
+      if (index !== -1) {
+        productosActuales[index] = productoEditado;
+        // Notificamos a todos los componentes que la lista cambió
+        this.productosSubject.next([...productosActuales]);
+      } else {
+        // Si por alguna razón no estaba (raro), recargamos
+        this.obtenerProductos();
+      }
+    })
+  );
+}
 
   deleteProduct(id: string): Observable<any> {
     return this.http.delete(`${this.url}/${id}`).pipe(

@@ -7,11 +7,12 @@ import { Subscription, combineLatest } from 'rxjs';
 import { CarritoService } from '../../services/carrito.service';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
+import { CloudinaryUrlPipe } from '../../pages/pipes/cloudinary.pipe';
 
 @Component({
   selector: 'app-carrito-lateral',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,CloudinaryUrlPipe],
   templateUrl: './carrito-lateral.component.html',
   styleUrl: './carrito-lateral.component.css'
 })

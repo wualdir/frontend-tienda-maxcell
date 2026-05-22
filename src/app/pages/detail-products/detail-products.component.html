@@ -28,7 +28,7 @@
         <ng-container *ngIf="!mostrarVideo; else videoTpl">
           <!-- IMAGEN PRINCIPAL: Sugerido 800x1000 (Vertical Alta Calidad) -->
           <!-- Esto hará que el neón y los detalles del equipo resalten mucho -->
-          <img [src]="imagenPrincipal | cloudinaryUrl:400:350" 
+          <img [src]="imagenPrincipal | cloudinaryUrl:400:480" 
                class="main-img-neon" 
                [alt]="producto.modelo">
         </ng-container>

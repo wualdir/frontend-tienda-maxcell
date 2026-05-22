@@ -20,14 +20,18 @@
         <span class="pulse-ring"></span>
         <span class="icon">📦</span>
       </div>
-      <p class="empty-text">Tu arsenal tecnológico está vacío</p>
+      <p class="empty-text">Tu carrito tecnológico está vacío</p>
       <button class="btn-explore" (click)="close()">Explorar Tienda</button>
     </div>
 
     <div *ngFor="let item of cart" class="cart-item">
-      <div class="item-img-container">
-        <img [src]="item.imagen || 'assets/placeholder-tech.png'" [alt]="item.modelo">
-      </div>
+     <!-- Busca esta sección en tu HTML -->
+<div class="item-img-container">
+  <img 
+    [src]="item.imagen | cloudinaryUrl:150:150" 
+    [alt]="item.modelo"
+  >
+</div>
       
       <div class="item-details">
         <div class="item-main-info">

@@ -3,11 +3,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdminProductoService } from '../../../services/admin-producto.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CloudinaryUrlPipe } from '../../../../pages/pipes/cloudinary.pipe';
 
 @Component({
   selector: 'app-editar-producto',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, CloudinaryUrlPipe],
   templateUrl: './editar-producto.component.html',
   styleUrl: './editar-producto.component.css'
 })
@@ -18,21 +19,21 @@ export class EditarProductoComponent implements OnInit {
 
   id!: string;
   loading = false;
-
-  producto: any = {
-    modelo: '',
-    marca: '',
-    precio: 0,
-    precioOriginal: 0,
-    stock: 0,
-    descripcion: '',
+  // Estructura inicializada para evitar undefined
+  producto: any = { 
+    modelo: '', 
+    marca: '', 
+    precio: 0, 
+    precioOriginal: 0, 
+    stock: 0, 
+    descripcion: '', 
     specs: {
       espeCamPrincipal: '',
       espePantalla: '',
       espeBateria: '',
-      espeRam: '',
-      espeAlmacenamiento: ''
-    }
+      espeRam: 0,
+      espeAlmacenamiento: 0
+    } 
   };
 
   imagenesNuevas: File[] = [];
@@ -47,18 +48,13 @@ export class EditarProductoComponent implements OnInit {
   cargarDatos() {
     this.service.getById(this.id).subscribe((data) => {
       this.producto = {
-        modelo: data.modelo,
-        marca: data.marca,
-        precio: data.precio,
-        precioOriginal: data.precioOriginal || 0,
-        stock: data.stock,
-        descripcion: data.descripcion,
+        ...data,
         specs: {
           espeCamPrincipal: data.especificaciones?.camaraPrincipal || '',
           espePantalla: data.especificaciones?.pantalla || '',
           espeBateria: data.especificaciones?.bateria || '',
-          espeRam: data.especificaciones?.ram?.toString() || '',
-          espeAlmacenamiento: data.especificaciones?.almacenamiento?.toString() || ''
+          espeRam: data.especificaciones?.ram || 0,
+          espeAlmacenamiento: data.especificaciones?.almacenamiento || 0
         }
       };
       this.imagenesActuales = [...(data.imagenes || [])];
@@ -70,7 +66,6 @@ export class EditarProductoComponent implements OnInit {
     if (files) {
       const newFiles = Array.from(files) as File[];
       this.imagenesNuevas = [...this.imagenesNuevas, ...newFiles];
-
       newFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => this.imagePreviews.push(reader.result as string);
@@ -79,44 +74,48 @@ export class EditarProductoComponent implements OnInit {
     }
   }
 
-  // Quitar de la lista de nuevas (antes de subir)
-  removeNewImage(index: number) {
-    this.imagenesNuevas.splice(index, 1);
-    this.imagePreviews.splice(index, 1);
+  removeExistingImage(index: number) { this.imagenesActuales.splice(index, 1); }
+  removeNewImage(index: number) { 
+    this.imagenesNuevas.splice(index, 1); 
+    this.imagePreviews.splice(index, 1); 
   }
 
-  // Quitar de las que ya existen en la BD
-  removeExistingImage(index: number) {
-    this.imagenesActuales.splice(index, 1);
+  private extraerId(value: string): string {
+    if (!value) return '';
+    if (!value.toString().startsWith('http')) return value;
+    const parts = value.split('/upload/');
+    if (parts.length > 1) {
+      return parts[1].replace(/^v\d+\//, '').replace(/\.[^/.]+$/, "");
+    }
+    return value;
   }
 
   actualizar() {
     this.loading = true;
     const formData = new FormData();
 
-    // 1. Datos básicos
+    // 1. Campos de texto básicos
     formData.append('modelo', this.producto.modelo);
     formData.append('marca', this.producto.marca);
-    formData.append('precio', this.producto.precio.toString());
-    formData.append('precioOriginal', this.producto.precioOriginal.toString());
-    formData.append('stock', this.producto.stock.toString());
+    formData.append('precio', (this.producto.precio || 0).toString());
+    formData.append('precioOriginal', (this.producto.precioOriginal || 0).toString());
+    formData.append('stock', (this.producto.stock || 0).toString());
     formData.append('descripcion', this.producto.descripcion);
-
-    // 2. Specs para el Backend
+   formData.append('disponible', this.producto.disponible ? 'true' : 'false');
+    
+    // 2. Especificaciones (Asegurando que sean strings numéricos válidos)
     formData.append('espeCamPrincipal', this.producto.specs.espeCamPrincipal);
     formData.append('espePantalla', this.producto.specs.espePantalla);
     formData.append('espeBateria', this.producto.specs.espeBateria);
-    formData.append('espeRam', this.producto.specs.espeRam);
-    formData.append('espeAlmacenamiento', this.producto.specs.espeAlmacenamiento);
+    formData.append('espeRam', (this.producto.specs.espeRam || 0).toString());
+    formData.append('espeAlmacenamiento', (this.producto.specs.espeAlmacenamiento || 0).toString());
 
-    // 3. Imágenes nuevas
-    this.imagenesNuevas.forEach(file => {
-      formData.append('imagenes', file);
-    });
+    // 3. Imágenes conservadas (IDs limpios)
+    const idsParaConservar = this.imagenesActuales.map(img => this.extraerId(img));
+    formData.append('imagenesRestantes', JSON.stringify(idsParaConservar));
 
-    // 4. 🔥 Enviamos el array de imágenes que decidimos conservar
-    // Nota: El backend debe estar preparado para recibir este campo
-    formData.append('imagenesRestantes', JSON.stringify(this.imagenesActuales));
+    // 4. Archivos nuevos
+    this.imagenesNuevas.forEach(file => formData.append('imagenes', file));
 
     this.service.updateProduct(this.id, formData).subscribe({
       next: () => this.router.navigate(['/admin/productos']),
