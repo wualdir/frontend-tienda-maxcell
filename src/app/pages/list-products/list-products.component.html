@@ -1,71 +1,82 @@
 <article class="lista-productos">
-  <section 
-    class="card" 
-    *ngFor="let prod of productos" 
-    [class.oferta]="prod.precioOriginal && prod.precioOriginal > prod.precio"
-    
-    [class.agotado]="prod.stock === 0"
-    [routerLink]="prod.stock > 0 ? ['/products', prod.id] : null">
+  
+  <!-- Estructura moderna: Control Flow de Angular -->
+  @for (prod of productos; track prod.id) {
+    <!-- Creamos la variable local de oferta de forma segura en el inicio de la tarjeta -->
+    @let esOferta = prod.precioOriginal && prod.precioOriginal > prod.precio;
 
-     <!-- Ribbon -->
-    <div *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio" class="ribbon">
-    OFERTA
-  </div>
-  <!-- Badge % descuento (en lugar del btn-quick-add cuando no hay hover) -->
-  <div 
-    *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio && prod.stock > 0"
-    class="badge-descuento">
-    -{{ ((1 - prod.precio / prod.precioOriginal) * 100) | number:'1.0-0' }}%
-    <small>dto.</small>
-  </div>
+    <section 
+      class="card" 
+      [class.oferta]="esOferta"
+      [class.agotado]="prod.stock === 0"
+      [routerLink]="prod.stock > 0 ? ['/products', prod.id] : null">
 
+      <!-- Ribbon de Oferta -->
+      @if (esOferta) {
+        <div class="ribbon">OFERTA</div>
+      }
 
-    <div *ngIf="prod.stock === 0" class="badge-status">
-      Sin Stock
-    </div>
+      <!-- Badge % descuento dinámico -->
+      @if (esOferta && prod.stock > 0) {
+        <div class="badge-descuento">
+          -{{ ((1 - prod.precio / prod.precioOriginal!) * 100) | number:'1.0-0' }}%
+          <small>dto.</small>
+        </div>
+      }
 
-    <button 
-      class="btn-quick-add" 
-      *ngIf="prod.stock > 0"
-      (click)="agregarAlCarrito(prod, $event)"
-      title="Agregar al carrito">
-      <span class="icon">🛒</span>
-    </button>
+      <!-- Badge Sin Stock -->
+      @if (prod.stock === 0) {
+        <div class="badge-status">Sin Stock</div>
+      }
 
-    <!-- CAMBIO AQUÍ: Aplicamos el pipe cloudinaryUrl -->
-    <img
-      class="card-img"
-     [src]="(prod.imagenes && prod.imagenes.length > 0) ? (prod.imagenes[0] | cloudinaryUrl:300:400) : 'https://via.placeholder.com/300x400'"
-      [alt]="prod.modelo"
-    >
+      <!-- Botón añadir rápido -->
+      @if (prod.stock > 0) {
+        <button 
+          class="btn-quick-add" 
+          (click)="agregarAlCarrito(prod, $event)"
+          title="Agregar al carrito">
+          <span class="icon">🛒</span>
+        </button>
+      }
 
-    <h3>{{ prod.modelo }}</h3>
-    <p>{{ prod.marca }}</p>
+      <!-- Imagen optimizada con Cloudinary -->
+      <img
+        class="card-img"
+        [src]="(prod.imagenes && prod.imagenes.length > 0) ? (prod.imagenes[0] | cloudinaryUrl:300:400) : 'https://via.placeholder.com/300x400'"
+        [alt]="prod.modelo"
+      >
 
-    <div class="precios-container">
-      <div class="fila-original" *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio">
-      <span class="precio-original">{{ prod.precioOriginal | currency:'S/. ' }}</span>
-      <span class="ahorro-badge">
-        Ahorras {{ (prod.precioOriginal - prod.precio) | currency:'S/. ' }}
-      </span>
-     </div>
-      
-      <h4 class="precio" [class.normal]="!(prod.precioOriginal && prod.precioOriginal > prod.precio)">
-      {{ prod.precio | currency:'S/. ' }}
-    </h4>
+      <h3>{{ prod.modelo }}</h3>
+      <p>{{ prod.marca }}</p>
 
-     <ng-container *ngIf="prod.precioOriginal && prod.precioOriginal > prod.precio">
-      <div class="oferta-divider"></div>
-      <span class="oferta-label">Precio de oferta</span>
-    </ng-container>
+      <!-- Sección de Precios -->
+      <div class="precios-container">
+        @if (esOferta) {
+          <div class="fila-original">
+            <span class="precio-original">{{ prod.precioOriginal | currency:'S/. ' }}</span>
+            <span class="ahorro-badge">
+              Ahorras {{ (prod.precioOriginal! - prod.precio) | currency:'S/. ' }}
+            </span>
+          </div>
+        }
+        
+        <h4 class="precio" [class.normal]="!esOferta">
+          {{ prod.precio | currency:'S/. ' }}
+        </h4>
 
-    </div>
+        @if (esOferta) {
+          <div class="oferta-divider"></div>
+          <span class="oferta-label">Precio de oferta</span>
+        }
+      </div>
 
-    <div class="btn-detalle"
-    [class.oferta-btn]="prod.precioOriginal && prod.precioOriginal > prod.precio"
-    [class.disabled]="prod.stock === 0">
-    {{ prod.stock > 0 ? 'Ver detalle' : 'No disponible' }}
-  </div>
+      <!-- Botón Detalle -->
+      <div class="btn-detalle"
+        [class.oferta-btn]="esOferta"
+        [class.disabled]="prod.stock === 0">
+        {{ prod.stock > 0 ? 'Ver detalle' : 'No disponible' }}
+      </div>
 
-  </section>
+    </section>
+  }
 </article>

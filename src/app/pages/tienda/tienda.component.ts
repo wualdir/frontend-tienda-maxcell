@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListProductsComponent } from "../list-products/list-products.component";
 import { ProductService } from '../../services/product.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-tienda',
@@ -30,12 +31,40 @@ export class TiendaComponent implements OnInit {
   // Listas para los combos
   marcasDisponibles = ['Samsung', 'APPLE', 'Xiaomi', 'ZTE', 'Honor', 'Logic'];
 
-  constructor(
+ constructor(
     private state: ProductService,
     private router: Router, 
     private route: ActivatedRoute
   ) {
-    this.productos$ = this.state.productos$;
+    // 🌟 INTERCEPTAMOS LOS PRODUCTOS Y LOS ORDENAMOS IGUAL QUE EN EL HOME
+    this.productos$ = this.state.productos$.pipe(
+      map(prods => {
+        // Hacemos una copia limpia del array para poder ordenarlo sin mutar el estado original
+        return [...prods].sort((a, b) => {
+          
+          // 📦 REGLA DE TIENDA: Si un producto no tiene stock, lo mandamos al final
+          if (a.stock === 0 && b.stock > 0) return 1;
+          if (a.stock > 0 && b.stock === 0) return -1;
+
+          // 🧠 TU FÓRMULA EXACTA DE IMPACTO EMOCIONAL (COPIADA DE TU HOME)
+          const precioOrigA = a.precioOriginal || 0;
+          const precioOrigB = b.precioOriginal || 0;
+
+          const ahorroA = precioOrigA > a.precio ? (precioOrigA - a.precio) : 0;
+          const ahorroB = precioOrigB > b.precio ? (precioOrigB - b.precio) : 0;
+          
+          const porcA = precioOrigA > 0 ? (ahorroA / precioOrigA) * 100 : 0;
+          const porcB = precioOrigB > 0 ? (ahorroB / precioOrigB) * 100 : 0;
+
+          const scoreA = ahorroA > 100 ? ahorroA : ahorroA + (porcA * 1.5);
+          const scoreB = ahorroB > 100 ? ahorroB : ahorroB + (porcB * 1.5);
+          
+          // Ordenamos de mayor a menor score de impacto
+          return scoreB - scoreA;
+        }); // 👈 NOTA: Aquí NO añadimos el .slice(0, 3) para que puedas ver todo tu catálogo ordenado
+      })
+    );
+
     this.loading$ = this.state.loading$;
   }
 
