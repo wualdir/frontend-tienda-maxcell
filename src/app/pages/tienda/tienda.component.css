@@ -151,18 +151,54 @@ select, input {
   cursor: pointer;
 }
 
-/* Desktop Adjustment */
+/* ==========================================================================
+   🛠️ DESKTOP ADJUSTMENT (Solución Definitiva para Navbar que tapa los Filtros)
+   ========================================================================== */
 @media (min-width: 768px) {
-  .filtros-content {
-    right: 0;
-    top: 0;
-    bottom: auto;
-    width: 400px;
-    height: 100%;
-    border-radius: 0;
-    transform: translateX(100%);
+  /* 1. Elevamos el overlay para que se ponga POR ENCIMA del menú/navbar */
+  .filtros-overlay {
+    display: flex;
+    justify-content: flex-end;
+    align-items: stretch;
+    z-index: 99999 !important; /* 👈 Un número altísimo para ganarle al Navbar, Pedidos, Admin, etc. */
   }
+
+  .filtros-content {
+    position: relative;
+    bottom: auto;
+    top: 0;
+    
+    width: 400px;
+    height: 100vh; 
+    border-radius: 0;
+    
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    background: var(--bg-card); /* Asegura que no sea transparente */
+  }
+
   .filtros-overlay.active .filtros-content {
     transform: translateX(0);
+  }
+
+  /* 2. Control de scroll interno rígido */
+  .filtros-body {
+    flex: 1;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 160px); 
+    padding: var(--sp-lg);
+  }
+
+  .filtros-footer {
+    padding-bottom: var(--sp-lg); 
+  }
+  /* Separamos el panel del techo por si el Navbar lo está empujando/tapando */
+  .filtros-content {
+    margin-top: 90px !important; /* 👈 Ajusta este número según el alto estimado de tu Navbar */
+    height: calc(100vh - 80px) !important;
   }
 }

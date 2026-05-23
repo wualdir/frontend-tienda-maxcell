@@ -98,6 +98,14 @@ ngOnInit() {
 
   toggleFiltros() {
     this.showFiltros = !this.showFiltros;
+
+    // 🌟 CONGELAR EL SCROLL DE LA PÁGINA
+    if (this.showFiltros) {
+      document.body.style.overflow = 'hidden'; // Bloquea el scroll general
+    } else {
+      document.body.style.overflow = ''; // Devuelve el scroll normal al cerrar
+    }
+    
   }
 
 aplicarFiltros() {
