@@ -20,7 +20,7 @@
         <div class="product-list">
           <div class="product-item" *ngFor="let item of orden.items">
             <div class="img-wrapper">
-              <img [src]="item.imagen" [alt]="item.nombre">
+              <img [src]="item.imagen | cloudinaryUrl:150:150" [alt]="item.nombre">
             </div>
             <div class="product-info">
               <h4>{{ item.nombre }}</h4>
@@ -44,26 +44,24 @@
             <span class="status-text">{{ orden.estado }}</span>
           </div>
 
-          
-<div class="data-group">
-  <label>Actualizar a:</label>
-  <div class="select-wrapper">
-    <select 
-      value=""
-      (change)="actualizarEstado(orden.id, $event)"
-      [disabled]="cargandoEstado"
-      [class.loading-select]="cargandoEstado"
-    >
-      <option value="" disabled selected>Seleccione un estado...</option>
-      
-      <option *ngFor="let est of estados" [value]="est">
-        {{ est }}
-      </option>
-    </select>
-    <div class="spinner-small" *ngIf="cargandoEstado"></div>
-  </div>
-</div>
-
+          <div class="data-group">
+            <label>Actualizar a:</label>
+            <div class="select-wrapper">
+              <select 
+                value=""
+                (change)="actualizarEstado(orden.id, $event)"
+                [disabled]="cargandoEstado"
+                [class.loading-select]="cargandoEstado"
+              >
+                <option value="" disabled selected>Seleccione un estado...</option>
+                
+                <option *ngFor="let est of estados" [value]="est">
+                  {{ est }}
+                </option>
+              </select>
+              <div class="spinner-small" *ngIf="cargandoEstado"></div>
+            </div>
+          </div>
         </div>
         
         <p class="admin-hint" *ngIf="!cargandoEstado">
