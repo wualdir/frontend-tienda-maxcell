@@ -2,13 +2,25 @@
   <h1 class="auth-title">📝 Registro</h1>
   
   <form class="auth-form" (ngSubmit)="onSubmit()">
+    
+    <div class="auth-field">
+      <input 
+        class="auth-input"
+        type="text" 
+        [(ngModel)]="nombre" 
+        name="nombre"
+        placeholder="Tu Nombre (ej. Vicente)"
+        required
+      />
+    </div>
+
     <div class="auth-field">
       <input 
         class="auth-input"
         type="text" 
         [(ngModel)]="username" 
         name="username"
-        placeholder="Nombre de usuario"
+        placeholder="Nombre de usuario único (ej. vicente99)"
         required
       />
     </div>
@@ -21,7 +33,7 @@
         name="password"
         placeholder="Contraseña"
         required
-      >
+      />
     </div>
   
     <button class="auth-btn-submit" type="submit" [disabled]="loading">
