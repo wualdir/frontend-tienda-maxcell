@@ -24,10 +24,10 @@
             </div>
             <div class="product-info">
               <h4>{{ item.nombre }}</h4>
-              <p class="unit-price">Precio unitario: {{ item.precio | currency:'USD' }}</p>
+              <p class="unit-price">Precio unitario: {{ item.precio | currency:'S/. ' }}</p>
             </div>
             <div class="product-qty">x{{ item.cantidad }}</div>
-            <div class="product-total">{{ (item.precio * item.cantidad) | currency:'USD' }}</div>
+            <div class="product-total">{{ (item.precio * item.cantidad) | currency:'S./ ' }}</div>
           </div>
         </div>
       </div>
@@ -87,10 +87,10 @@
 
       <div class="card-section summary-card">
         <h3 class="section-title">💰 Resumen de Pago</h3>
-        <div class="summary-line"><span>Subtotal</span><span>{{ orden.total | currency:'USD' }}</span></div>
+        <div class="summary-line"><span>Subtotal</span><span>{{ orden.total | currency:'S/. ' }}</span></div>
         <div class="summary-line"><span>Envío</span><span class="free">Bonificado</span></div>
         <hr class="divider">
-        <div class="summary-line total"><span>Total</span><span>{{ orden.total | currency:'USD' }}</span></div>
+        <div class="summary-line total"><span>Total</span><span>{{ orden.total | currency:'S/. ' }}</span></div>
       </div>
     </aside>
   </div>
